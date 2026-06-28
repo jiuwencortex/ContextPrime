@@ -1,0 +1,221 @@
+# tool_definitions.yaml
+#
+# Define the tools and tool groups to be scored by the recommendation matrix.
+# Copy this file to your workspace (e.g. ~/.jiuwenswarm/tool_definitions.yaml)
+# and point --tools-config at it.
+#
+# Two sections:
+#   tools:  standalone tools — one ComponentRecord each
+#   groups: bundled tools   — one ComponentRecord per group (members always selected together)
+
+tools:
+  - name: free_search
+    description: Search the web for free and return relevant results.
+    parameters:
+      - name: query
+        type: string
+        required: true
+        description: The search query to run
+
+  - name: fetch_webpage
+    description: Fetch and read the content of a web page.
+    parameters:
+      - name: url
+        type: string
+        required: true
+        description: The URL of the page to fetch
+
+  - name: paid_search
+    description: Search the web using a premium search API for higher-quality results.
+    parameters:
+      - name: query
+        type: string
+        required: true
+        description: The search query to run
+
+  - name: generate_image
+    description: Generate an image from a text description using an image generation model.
+    parameters:
+      - name: prompt
+        type: string
+        required: true
+        description: Text description of the image to generate
+      - name: size
+        type: string
+        required: false
+        description: Image size (e.g. 512x512, 1024x1024)
+
+  - name: video_understanding
+    description: Analyse and answer questions about video content.
+    parameters:
+      - name: video_url
+        type: string
+        required: true
+        description: URL or path to the video file
+      - name: question
+        type: string
+        required: false
+        description: Optional question about the video
+
+  - name: vision
+    description: Analyse image content and answer visual questions.
+    parameters:
+      - name: image_url
+        type: string
+        required: true
+        description: URL or path to the image
+      - name: question
+        type: string
+        required: false
+        description: Optional question about the image
+
+  - name: audio_transcription
+    description: Transcribe spoken audio to text.
+    parameters:
+      - name: audio_url
+        type: string
+        required: true
+        description: URL or path to the audio file
+
+  - name: user_todos
+    description: Create, list and update the user's personal to-do items.
+    parameters:
+      - name: action
+        type: string
+        required: true
+        description: Action to perform — create, list, update, or delete
+      - name: task
+        type: string
+        required: false
+        description: Task description (for create/update)
+
+  - name: acp_chat
+    description: Start or continue a multi-agent ACP (Agent Communication Protocol) chat session.
+    parameters:
+      - name: message
+        type: string
+        required: true
+        description: Message to send to the ACP agent
+
+groups:
+  - name: skill_browsing
+    description: Browse, peek at, and index skills in the skill library. Use when the user needs a capability that might be available as an installable skill.
+    members:
+      - name: skill_branch_peek
+        description: Quickly peek at a skill branch to see its name and description.
+        parameters:
+          - name: branch_name
+            type: string
+            required: true
+            description: Name of the skill branch to inspect
+      - name: skill_branch_explore
+        description: Explore the contents of skill branches matching a search query.
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: Keywords to search for in skill branches
+      - name: skill_index_build
+        description: Build or refresh the skill search index after installing new skills.
+        parameters: []
+
+  - name: skill_management
+    description: Search for, install, and uninstall skills from the skill marketplace.
+    members:
+      - name: search_skill
+        description: Search the skill marketplace for skills matching a query.
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: Search terms describing the desired capability
+      - name: install_skill
+        description: Install a skill from the marketplace by name.
+        parameters:
+          - name: skill_name
+            type: string
+            required: true
+            description: Name of the skill to install
+      - name: uninstall_skill
+        description: Remove an installed skill.
+        parameters:
+          - name: skill_name
+            type: string
+            required: true
+            description: Name of the installed skill to remove
+
+  - name: xiaoyi_device
+    description: Control and query an Xiaoyi device — notes, calendar, contacts, photos, alarms, messages, calls.
+    members:
+      - name: create_note
+        description: Create a new note on the device.
+        parameters:
+          - name: title
+            type: string
+            required: true
+            description: Note title
+          - name: content
+            type: string
+            required: false
+            description: Note body text
+      - name: search_notes
+        description: Search notes on the device.
+        parameters:
+          - name: query
+            type: string
+            required: true
+            description: Keywords to search for
+      - name: create_calendar_event
+        description: Create a calendar event on the device.
+        parameters:
+          - name: title
+            type: string
+            required: true
+            description: Event title
+          - name: start_time
+            type: string
+            required: true
+            description: Start time in ISO 8601 format
+      - name: search_calendar_event
+        description: Search calendar events on the device.
+        parameters:
+          - name: query
+            type: string
+            required: false
+            description: Keywords to search for
+      - name: search_contact
+        description: Search the device contact list.
+        parameters:
+          - name: name
+            type: string
+            required: false
+            description: Contact name to search for
+      - name: call_phone
+        description: Make a phone call through the device.
+        parameters:
+          - name: phone_number
+            type: string
+            required: true
+            description: Phone number to call
+      - name: send_message
+        description: Send a text message through the device.
+        parameters:
+          - name: phone_number
+            type: string
+            required: true
+            description: Recipient phone number
+          - name: message
+            type: string
+            required: true
+            description: Message text
+      - name: create_alarm
+        description: Create an alarm on the device.
+        parameters:
+          - name: time
+            type: string
+            required: true
+            description: Alarm time in HH:MM format
+          - name: label
+            type: string
+            required: false
+            description: Optional alarm label
