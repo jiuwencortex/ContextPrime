@@ -5,8 +5,8 @@ def _cmd_status(args) -> None:
     """Run fresh drift + staleness checks and print a health summary."""
     import sys
     from .staleness_checker import StalenessChecker
-    from .classifier.model_registry import ModelRegistry
-    from ..shared.distribution_monitor import DistributionMonitor
+    from .distribution_monitor import DistributionMonitor
+    from ..classifier.model_registry import ModelRegistry
 
     if not args.oracle_dir.exists():
         print(f"ERROR: --oracle-dir does not exist: {args.oracle_dir}", file=sys.stderr)

@@ -17,8 +17,8 @@ import logging
 from pathlib import Path
 
 from .rebuild_recommendation import RebuildRecommendation
-from oracle_builder.rebuild_recommender.staleness_checker import load_staleness_status
-from ...shared.distribution_monitor import load_drift_status
+from .staleness_checker import load_staleness_status
+from .distribution_monitor import load_drift_status
 from ...shared.turn_logger import TurnLogger
 
 logger = logging.getLogger(__name__)

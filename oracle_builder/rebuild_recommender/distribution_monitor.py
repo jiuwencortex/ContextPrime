@@ -12,7 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .turn_logger import TurnLogger
+from shared.turn_logger import TurnLogger
 
 logger = logging.getLogger(__name__)
 
