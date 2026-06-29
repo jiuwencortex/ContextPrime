@@ -300,7 +300,6 @@ graph TD
 
 </details>
 
-
 ---
 
 ## Slide 7 — Path A, Stage 1: What Is a Component?
@@ -364,22 +363,9 @@ Length Ratio = min(|output|, |expected|) / max(|output|, |expected|)
 
 Component's `mean_score` = mean of all four metrics across all N examples.
 
+**Optional semantic metrics:** BERTScore (embedding-based semantic similarity) and LLM judge (direct rating on a 1–10 scale) are available via `--metrics`. They address the paraphrase-blindness of lexical metrics but require extra dependencies or LLM calls during scoring.
+
 Why lexical? Not because it is perfect. Because it is cheap to compute, requires no LLM at search time, and provides a relative ordering signal that is good enough to guide evolutionary search. The goal is direction, not precision.
-
-<details>
-<summary>Gap to real ML</summary>
-
-The base quality signal is two LLMs evaluating each other using token overlap. This has three compounding problems:
-
-**The expected answers are synthetic.** The LLM that generated the (query, expected_answer) pairs may not cover the real distribution of production queries. It generates the queries it thinks are representative, which may not match what users actually ask. A real ML system would ground the expected answers in real user queries and real desired outputs.
-
-**Token overlap is not semantic correctness.** A component that produces the right answer in different words — a paraphrase, a different structure, a more concise formulation — will be penalized. A component that produces plausible-sounding text with the right vocabulary but incorrect reasoning will be rewarded. F1, bigram F1, and bag-of-words all measure surface form, not meaning. BERTScore or an LLM judge would be substantially more accurate measures of answer quality.
-
-**The score measures the component in isolation.** Stage 1 evaluates each component by putting only it in the system prompt and measuring the output. In production the agent has multiple components in context simultaneously. A component that is mediocre alone but excellent in combination — because it covers a gap that other components leave — will receive a low synthetic score and be deprioritized by the GA. There is no way to detect joint contribution from independent evaluation.
-
-Path A Stage 2 enrichment partially corrects the first two problems as real outcome data accumulates. But the individual component scores remain lexical proxies until enough real turns have been logged for every component.
-
-</details>
 
 ---
 
@@ -697,7 +683,6 @@ graph TD
 
 </details>
 
-
 ---
 
 ## Slide 14 — Path A, Stage 4a: Evolutionary Search Setup
@@ -1014,7 +999,6 @@ graph LR
 
 </details>
 
-
 ---
 
 ## Slide 24 — Path B: How Logistic Regression Works (General Explanation)
@@ -1204,7 +1188,6 @@ graph TD
 
 </details>
 
-
 ---
 
 ## Slide 26 — Path B: Off-Policy Exploration
@@ -1283,23 +1266,6 @@ If an explicit rating is logged: "positive" → 1.0, "negative" → 0.0. Overrid
 
 This scalar is the training label in Path B classifier training.
 
-<details>
-<summary>Gap to real ML</summary>
-
-The outcome quality label is an approximation built from three implicit behavioral signals, none of which directly measures what we want to know: "did this specific set of context components cause the agent to produce a better output for this query?"
-
-**`task_completed` is binary and coarse.** A task can be completed with a perfect answer or a barely-adequate one. The classifier gets the same positive label (quality ≈ 0.70) in both cases. A real reward signal would distinguish degrees of success — how good was the output, not just whether it crossed a completion threshold.
-
-**`follow_up_correction` conflates causes.** The user sent a correction because the agent's output was wrong — but was it wrong because the context components were poorly chosen, or because the model reasoned badly given perfectly good context? The label attributes the failure to context selection when the real cause may have been elsewhere. This introduces noise into every training example where the failure was not context-related.
-
-**`conversation_length` is a proxy of a proxy.** Shorter conversations are assumed to be better. This is directionally true on average but fails in many cases: a complex task legitimately requires a long conversation; a short conversation may mean the user gave up rather than succeeded.
-
-**Explicit ratings override the formula but are rare.** In practice, most turns will not have explicit ratings. The classifier trains almost entirely on the implicit signal, which is noisy.
-
-A real ML system would invest in stronger labels: explicit per-turn user satisfaction ratings, automated LLM judge scoring of the agent's output against a reference, or task completion detection through structured outcome measurement (e.g., "did the CI pipeline actually pass?"). Better labels would substantially improve classifier quality even without changing the model architecture.
-
-</details>
-
 ---
 
 ## Slide 29 — Path B: Component Inclusion Classifier
@@ -1341,22 +1307,49 @@ Why: a classifier trained on 3 turns will overfit noise. It should not override 
 
 **Explored turns:** turns flagged with `exploration.explored = true` are included in training. This is the mechanism by which off-policy exploration corrects the selection bias — the trainer sees component–query pairs that the selector would never have produced on its own.
 
-<details>
-<summary>Gap to real ML</summary>
+---
 
-**No train/test split or cross-validation.** The classifier trains on all available logs within the recency window. There is no held-out evaluation set and no mechanism to measure how well the trained classifier actually generalizes. The system cannot answer "is the new classifier better than the old one?" before deploying it. In a real ML system, you would reserve a fraction of logs for evaluation, compute metrics (precision, recall, AUC per component), and only deploy if those metrics improve.
+## Slide 31 — Path B: Model Evaluation and Registry
 
-**No performance tracking over time.** There is no dashboard showing whether classifier accuracy is improving as more data accumulates, which components have poor precision, or whether the classifier is drifting from the cluster selector's baseline. Without measurement, there is no way to know if Path B is actually better than Path A at any given maturity level.
+Every classifier training run is measured before it is deployed.
 
-**No model versioning or rollback.** When `train-classifier` runs, `classifier.pkl` is overwritten in place. If retraining produces a worse model — due to a bad data window, a burst of noisy logs, or a library change that makes old logs misleading — there is no way to roll back to the previous version. A real ML system would maintain a model registry with version history, metadata (training date, number of examples, evaluation metrics), and the ability to promote or demote versions.
+**Train/validation split:** logs are split chronologically (80% train, 20% validation). The validation set always contains the most recent turns, so the model is evaluated on the behavior it will actually see in production.
 
-**No automated hyperparameter tuning.** C = 1.0 and threshold = 0.5 are fixed defaults for all components across all deployments. In practice, some components are rare (few logged turns) and need strong regularization (low C); others are common and could benefit from weaker regularization (higher C). The threshold could be tuned per component to optimize precision-recall tradeoff. A real ML system would run grid search or Bayesian optimization over these parameters using the held-out evaluation set.
+**Per-component metrics:** precision, recall, F1, and AUC are computed independently for each of the N component classifiers. A component with few logged turns will have noisier metrics than a component with hundreds.
 
-</details>
+**Promotion gate:** a new model is activated only if its validation macro-F1 improves over the current active model by at least 0.01. If the gate fails, the previous model remains active and the new model is archived. Use `--force-promote` to bypass the gate when manual override is needed.
+
+**Registry:** every trained model is stored as `classifier_YYYY-MM-DD_HHMMSS.pkl`. The registry at `classifier_registry.json` tracks training date, turn count, validation macro-F1, mean AUC, and active status. `classifier_current.pkl` is a symlink to the active model. `list-versions` prints the registry in a human-readable table.
+
+Rollback: because previous versions are retained, an operator can restore an older model by updating the symlink if a newly promoted model degrades in production.
 
 ---
 
-## Slide 31 — Path B, Query Time: ClassifierSelector
+## Slide 32 — Path B: Hyperparameter Tuning
+
+Fixed defaults are starting points. The `tune` subcommand searches for better values using the held-out validation set.
+
+**Classifier hyperparameters (grid search):**
+- `C`: [0.01, 0.1, 0.5, 1.0, 5.0, 10.0] — regularization strength
+- `threshold`: [0.3, 0.4, 0.5, 0.6, 0.7] — inclusion cutoff
+- For each (C, threshold): train on 80%, evaluate macro-F1 on 20%
+- Best pair is stored in `classifier_registry.json`
+- Per-component threshold sweep: after global tuning, each component is independently swept over [0.3, 0.5, 0.7] and its best value is written to `classifier_thresholds.json`
+
+**Cluster count tuning (`--auto-k`):**
+- Fits K-means for K in [5, 10, 15, 20, 30, 50]
+- Computes inertia and silhouette score
+- Selects K at the elbow of the inertia curve
+- Result is used automatically in the next `evolve` run
+
+**Per-cluster λ tuning (`--use-cluster-lambda`):**
+- After at least 100 logged turns, computes Spearman correlation between config fitness (using different λ values) and mean outcome quality of turns assigned to each cluster
+- Selects the λ that maximizes correlation per cluster
+- Writes `per_cluster_lambda.json`; `fitness_computer.py` loads it when available
+
+---
+
+## Slide 33 — Path B, Query Time: ClassifierSelector
 
 Path B query-time inference. Uses `classifier.pkl`. Accepts a pre-computed embedding, not raw text.
 
@@ -1374,7 +1367,7 @@ Typical integration: trigger ClassifierSelector when `classifier.pkl` exists and
 
 ---
 
-## Slide 32 — Shared Infrastructure: Feedback Loop
+## Slide 34 — Shared Infrastructure: Feedback Loop
 
 Both paths depend on the same interaction log stream. The feedback loop is independent of either path — it just writes the data that both paths read later.
 
@@ -1419,9 +1412,9 @@ Keeping paths independent was the right early architectural choice: simpler to b
 
 ---
 
-## Slide 33 — System Maturity Levels
+## Slide 35 — System Maturity Levels
 
-The system has defined behavior at every maturity level. The caller chooses between two paths based on the situation:
+The system has defined behavior at every maturity level. Automatic monitoring (`status`, `check-rebuild`) detects drift and staleness and recommends when to retrain or rebuild. The caller chooses between two paths based on the situation:
 
 | System state | Path | Behavior |
 |---|---|---|
@@ -1433,24 +1426,34 @@ The system has defined behavior at every maturity level. The caller chooses betw
 
 Both paths are always valid. The system never fails. The caller decides which to use based on its own policy.
 
-<details>
-<summary>Gap to real ML</summary>
+---
 
-The maturity table treats deployment as a one-time progression from cold-start to trained classifier. It does not account for what happens when the environment changes after the classifier is already trained.
+## Slide 36 — Shared Infrastructure: Drift Detection and Monitoring
 
-**No concept drift detection.** If the distribution of queries shifts — new user types, new workflows, seasonal patterns, a product launch that brings a new class of queries — the trained classifier and the cluster oracle both become progressively less accurate. The 8-week recency window provides partial protection for the classifier (old data ages out), but neither path detects that drift is occurring and neither automatically triggers retraining or a rebuild.
+The system monitors itself and recommends when to retrain or rebuild.
 
-**No oracle staleness detection.** If the skill library changes significantly — new skills added, old ones removed, existing ones heavily edited — the cluster oracle (`context_configs.json`) built from the old library may recommend components that no longer exist or miss components that are now highly relevant. There is no monitoring that compares the oracle's recommendations against what the library currently contains.
+**Query distribution monitor (`shared/distribution_monitor.py`):**
+- Maintains rolling embeddings of recent queries (1-week and 4-week windows)
+- Computes Jensen-Shannon divergence between the two windows on TF-IDF histograms
+- Threshold: JS divergence > 0.15 → flags potential drift
+- Writes `drift_status.json`: detected, divergence value, window sizes, timestamp
 
-**No automatic retraining schedule.** The operator must manually run `train-classifier` and `evolve`. A real ML system would have an automated retraining pipeline triggered by data volume thresholds, scheduled time intervals, or detected performance degradation — and would validate the new model before deploying it.
+**Oracle staleness checker (`oracle_builder/staleness_checker.py`):**
+- Loads `context_configs.json` and re-scans current component sources
+- Detects: new components not in the oracle, removed components still referenced, components with changed fingerprints
+- Writes `staleness_status.json`: stale flag, lists of added/removed/changed components
 
-**The transition thresholds (100, 500 turns) are fixed guesses.** The right threshold for switching from Path A to Path B depends on the number of components, the variety of query types, and the noise level in the outcome signals. A deployment with 5 components and very clear task completion signals might be ready at 50 turns. A deployment with 100 components and noisy implicit signals might need 5000. There is no mechanism to determine the right threshold from the data.
+**Retraining scheduler (`oracle_builder/rebuild_recommender/`):**
+- `should_retrain_classifier()`: returns True if drift detected, or turns since last training > threshold (default 500), or last training older than interval (default 7 days)
+- `should_rebuild_oracle()`: returns True if oracle is stale, or drift detected and last rebuild > 14 days
 
-</details>
+**CLI:**
+- `status` — runs drift monitor and staleness checker, prints human-readable summary
+- `check-rebuild` — prints "REBUILD RECOMMENDED: [reasons]" or "NO REBUILD NEEDED"; exits with code 2 when rebuild is needed (for scripted workflows)
 
 ---
 
-## Slide 34 — Data Flow Summary
+## Slide 37 — Data Flow Summary
 
 ```
 PATH A — EVOLUTIONARY SELECTOR:
@@ -1524,10 +1527,9 @@ graph TD
 
 </details>
 
-
 ---
 
-## Slide 35 — Key Algorithmic Decisions: Summary
+## Slide 38 — Key Algorithmic Decisions: Summary
 
 | Decision | What was chosen | Why |
 |---|---|---|
@@ -1545,34 +1547,21 @@ graph TD
 | Outcome formula baseline | 0.5 | Neutral default; task completion adds 0.20; correction subtracts 0.30 |
 | Ordering stored in artifact | Most-relevant-first | Runtime bookend requires no score recomputation |
 | Budget estimation | Heuristic (word count + regex) | Zero latency; no model required; good enough for typical query lengths |
-
-<details>
-<summary>Gap to real ML</summary>
-
-Every parameter in this table is a fixed default. None of them are tuned from data.
-
-**Parameters that should be tuned per deployment:**
-
-- `C = 1.0` (classifier regularization) — the right value depends on dataset size and noise level. Too low and the classifier overfits; too high and it cannot learn the signal. With 50 components and 500 turns you have ~10 examples per component on average — a very small dataset where C should probably be much smaller than 1.0.
-- `threshold = 0.5` (classifier inclusion cutoff) — the right value depends on the precision/recall tradeoff the deployment wants. A conservative deployment (avoid including irrelevant components) wants a higher threshold. An inclusive deployment (never miss a relevant component) wants a lower one. Neither is 0.5 in general.
-- `K = 20` (cluster count) — 20 clusters assumes the query space naturally partitions into roughly 20 distinct types. If the real distribution has 5 types, K=20 creates spurious clusters that confuse the GA. If it has 50 types, K=20 lumps unrelated queries together and the per-cluster configs are averaged over incompatible query subtypes.
-- `λ = 0.1` (token penalty) — as discussed in Slide 15, this should be learned or at least tuned per cluster.
-- `n_needed = 100` (enrichment threshold) — how quickly to trust real data depends on data quality. Noisy signals need more data before they displace the synthetic prior; clean signals can take over earlier.
-
-**What a real ML system would do:** maintain a validation set of logs with known-quality labels, run a hyperparameter search (grid or Bayesian) over the key parameters, and select the values that maximize validation performance. This is standard practice and would likely produce measurable improvements in classifier quality with no architectural changes.
-
-</details>
+| Model evaluation | Chronological 80/20 train/val split; per-component precision/recall/F1/AUC | Measurement required before tuning or promotion |
+| Hyperparameter tuning | Grid search over C × threshold; elbow+silhouette for K; Spearman correlation for per-cluster λ | Defaults are starting points; tuned values derived from data |
 
 ---
 
-## Slide 36 — CLI Reference
+## Slide 39 — CLI Reference
 
 ```bash
 # Path A — Stage 1+2: score components
 python -m jiuwenswarm.thalamus.component_scoring build \
     --type {skills|memory|tools|enrich|all} \
     --skills-dir /path --project-dir /path --tools-dir /path \
-    --matrix-dir /oracle --model gpt-4o-mini --api-key $KEY
+    --matrix-dir /oracle --model gpt-4o-mini --api-key $KEY \
+    --metrics f1,bigram_f1,bag_of_words,length_ratio,bert_score,llm_judge \
+    --eval-combination-size 1
 
 # Path A — Stages 3–5: build oracle (cluster, evolve, write)
 python -m jiuwenswarm.thalamus.oracle_builder evolve \
@@ -1589,12 +1578,30 @@ python -m jiuwenswarm.thalamus.oracle_builder evolve \
 
 # Path B: train classifier
 python -m jiuwenswarm.thalamus.oracle_builder train-classifier \
-    --oracle-dir /oracle --min-turns 10
+    --oracle-dir /oracle --min-turns 10 \
+    --judge-model gpt-4o-mini --judge-api-key $KEY \
+    --force-promote
 
 # Query time lookup (Path A — cluster-based)
 python -m jiuwenswarm.thalamus.context_selectors lookup \
     --oracle-dir /oracle \
     --query "Set up a CI pipeline" --budget auto --ordering bookend
+
+# Path B — list classifier versions
+python -m jiuwenswarm.thalamus.oracle_builder list-versions \
+    --oracle-dir /oracle
+
+# Path B — tune hyperparameters (grid-search C, threshold, K, λ)
+python -m jiuwenswarm.thalamus.oracle_builder tune \
+    --oracle-dir /oracle --log-dir /logs
+
+# Monitoring — check drift and staleness
+python -m jiuwenswarm.thalamus.oracle_builder status \
+    --oracle-dir /oracle --skills-dir /skills --project-dir /project --tools-dir /tools
+
+# Monitoring — recommend rebuild or retrain
+python -m jiuwenswarm.thalamus.oracle_builder check-rebuild \
+    --oracle-dir /oracle
 
 # Query time classify (Path B — classifier-based)
 python -m jiuwenswarm.thalamus.context_selectors classify \
@@ -1603,7 +1610,7 @@ python -m jiuwenswarm.thalamus.context_selectors classify \
 
 ---
 
-## Slide 37 — Key Parameters Reference
+## Slide 40 — Key Parameters Reference
 
 | Parameter | Default | What it controls |
 |---|---|---|
@@ -1624,10 +1631,17 @@ python -m jiuwenswarm.thalamus.context_selectors classify \
 | `--C` | 1.0 | L2 inverse regularization for logistic regression |
 | `--ordering` | `relevance` | `relevance`, `bookend`, or `none` |
 | `--budget` | `medium` | Budget tier or `auto` |
+| `--judge-model` | `gpt-4o-mini` | LLM used for outcome judging and metric scoring |
+| `--judge-api-key` | — | API key for judge model |
+| `--force-promote` | off | Bypass promotion gate and activate new classifier |
+| `--auto-k` | off | Automatically tune cluster count K before evolve |
+| `--use-cluster-lambda` | off | Use per-cluster λ values tuned from logged data |
+| `--max-features` | 2000 | TF-IDF vocabulary size |
+| `--eval-combination-size` | 1 | Number of components evaluated jointly (1 = isolated) |
 
 ---
 
-## Slide 38 — Limitations
+## Slide 41 — Limitations
 
 **Lexical scoring is a proxy.** F1, bigram F1, bag-of-words, and length ratio measure token overlap — not semantic correctness. A component that produces semantically right answers in different words is underscored. Path A Stage 2 enrichment and `--validate-pareto` partially correct this, but individual component scores remain lexical proxies until enough real data accumulates.
 
@@ -1641,42 +1655,35 @@ python -m jiuwenswarm.thalamus.context_selectors classify \
 
 **Bookend assumes monotone attention decay.** The bookend strategy is motivated by empirical findings for specific model families and context lengths. It may not hold universally, and may interact with system prompt formatting. Evaluate before applying universally.
 
----
+**Fitness function is hand-crafted, not learned.** The formula (quality × relevance − λ·tokens) is a fixed engineering choice. It cannot learn from data, cannot adapt per cluster, and cannot detect that two components are jointly necessary but individually modest. A learned fitness model would require significantly more logged data.
 
-## Slide 39 — Road to AutoML
+**Independent classifiers cannot model joint necessity.** Each of the N logistic regression models decides inclusion independently. If skill A and tool B are only useful together, both classifiers learn low correlation and the pair is excluded. A joint model (multi-label classifier, MLP, or sequential selector) would capture these interactions but requires more data and more compute.
 
-What needs to happen, in order, to move THALAMUS from a well-engineered system toward AutoML.
-
-**Step 1 — proper MLOps foundations**
-- Tune hyperparameters (C, λ, K, threshold) from data instead of using fixed defaults
-- Keep a held-out validation set of logs; only deploy a new model if it scores better than the previous one
-- Version every model artifact with its training date, training data size, and validation metrics; make rollback possible
-- Detect when the query distribution shifts or the component library changes, and trigger a rebuild automatically
-- Use an LLM judge or explicit user ratings as the outcome label instead of token overlap proxies
-
-**Step 2 — cross-path learning**
-- When the classifier starts training, initialize its weights from the GA's relevance scores instead of from zero — it already knows which components are relevant to which clusters
-- When the GA runs, use the classifier's predictions as part of the fitness estimate — the classifier has real-data signal the hand-crafted formula does not have
-- Let the two paths inform each other on every rebuild cycle rather than run fully independently
-
-**Step 3 — learned fitness function**
-- Replace the hand-crafted formula (quality × relevance − λ·tokens) with a model trained on logged (component set, query cluster, outcome quality) triples
-- The current formula is linear: it adds up individual component scores and cannot detect that component A and tool B are jointly necessary — neither helps alone, but together they are essential
-- A learned fitness model can capture these interaction effects; a linear formula structurally cannot, regardless of how well its parameters are tuned
-
-**Step 4 — algorithm selection**
-- The model class is currently fixed: logistic regression for Path B, k-means for clustering, genetic algorithm for search
-- Try multiple model classes per deployment (logistic regression, gradient boosting, small MLP, different clusterers) and select the one that performs best on held-out validation data
-- This is the step where the system starts choosing its own architecture rather than having it chosen by the engineer
-
-**Step 5 — meta-learning across deployments**
-- Each new deployment currently starts from scratch: random GA initialization, untrained classifier, guessed hyperparameters
-- With enough deployments, learn prior distributions over which hyperparameters work, which model classes win, how many clusters fit which query distributions
-- A new deployment cold-starts from that prior and converges to a good solution with far less data
+**Transition thresholds (100, 500 turns) are deployment-specific guesses.** The right threshold depends on the number of components, query variety, and label noise. The system does not determine the optimal threshold from data.
 
 ---
 
-## Slide 40 — Summary
+## Slide 42 — Future Work: Road to AutoML
+
+What remains to move THALAMUS from a well-engineered MLOps system toward full AutoML.
+
+**Step 1 — cross-path learning**
+- Warm-start the classifier from the GA's relevance scores instead of zero initialization
+- Feed the classifier's predictions into the GA fitness function as an additional term
+- Let the two paths inform each other on every rebuild cycle
+
+**Step 2 — learned fitness function**
+- Replace the hand-crafted formula with a gradient-boosting regressor trained on logged (component set, query cluster, outcome quality) triples
+- Captures combination effects that a linear formula structurally cannot
+
+**Step 3 — joint component modeling**
+- Replace N independent binary classifiers with a single multi-label model (shared representation, N outputs)
+- Learns that component A and tool B are jointly necessary
+- Requires the most data and the most compute; last step in the progression
+
+---
+
+## Slide 43 — Summary
 
 **The problem:** uniform context inclusion causes Context Saturation as the component library grows. Quality degrades, token costs scale with library size, and attention is diluted by irrelevant content.
 
