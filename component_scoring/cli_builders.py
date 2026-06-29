@@ -46,19 +46,17 @@ async def build_skills(args: argparse.Namespace, model: Model, model_name: str) 
                     state_file="matrix_state_skills.json", label="skill")
         return
 
-    composer = SkillMatrixComposer(
-        skills_dir=args.skills_dir,
-        matrix_dir=args.matrix_dir,
-        model=model,
-        model_name=model_name,
-        n_examples=args.n_examples,
-        parallel=args.parallel,
-        cross_eval=args.cross_eval,
-        timeout=args.timeout,
-        temperature=args.temperature,
-        max_tokens=args.max_tokens,
-        **_metric_kwargs(args),
-    )
+    composer = SkillMatrixComposer(skills_dir=args.skills_dir,
+                                   matrix_dir=args.matrix_dir,
+                                   model=model,
+                                   model_name=model_name,
+                                   n_examples=args.n_examples,
+                                   parallel=args.parallel,
+                                   cross_eval=args.cross_eval,
+                                   timeout=args.timeout,
+                                   temperature=args.temperature,
+                                   max_tokens=args.max_tokens,
+                                   **_metric_kwargs(args))
     await composer.build(force=args.force, only=args.only)
 
     if args.prune:
@@ -90,18 +88,16 @@ async def build_memory(args: argparse.Namespace, model: Model, model_name: str) 
                     state_file="matrix_state_memory.json", label="memory section")
         return
 
-    composer = MemoryMatrixComposer(
-        project_dir=args.project_dir,
-        matrix_dir=args.matrix_dir,
-        model=model,
-        model_name=model_name,
-        n_examples=args.n_examples,
-        parallel=args.parallel,
-        timeout=args.timeout,
-        temperature=args.temperature,
-        max_tokens=args.max_tokens,
-        **_metric_kwargs(args),
-    )
+    composer = MemoryMatrixComposer(project_dir=args.project_dir,
+                                    matrix_dir=args.matrix_dir,
+                                    model=model,
+                                    model_name=model_name,
+                                    n_examples=args.n_examples,
+                                    parallel=args.parallel,
+                                    timeout=args.timeout,
+                                    temperature=args.temperature,
+                                    max_tokens=args.max_tokens,
+                                    **_metric_kwargs(args))
     await composer.build(force=args.force, only=args.only)
 
 
@@ -126,16 +122,14 @@ async def build_tools(args: argparse.Namespace, model: Model, model_name: str) -
                     state_file="matrix_state_tools.json", label="tool")
         return
 
-    composer = ToolMatrixComposer(
-        tool_dirs=tool_dirs,
-        matrix_dir=args.matrix_dir,
-        model=model,
-        model_name=model_name,
-        n_examples=args.n_examples,
-        parallel=args.parallel,
-        timeout=args.timeout,
-        temperature=args.temperature,
-        max_tokens=args.max_tokens,
-        **_metric_kwargs(args),
-    )
+    composer = ToolMatrixComposer(tool_dirs=tool_dirs,
+                                  matrix_dir=args.matrix_dir,
+                                  model=model,
+                                  model_name=model_name,
+                                  n_examples=args.n_examples,
+                                  parallel=args.parallel,
+                                  timeout=args.timeout,
+                                  temperature=args.temperature,
+                                  max_tokens=args.max_tokens,
+                                  **_metric_kwargs(args))
     await composer.build(force=args.force, only=args.only)

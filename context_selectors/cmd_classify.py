@@ -5,7 +5,7 @@ import sys
 
 import numpy as np
 
-from jiuwenswarm.thalamus.context_selectors.classifier_selector import ClassifierSelector
+from .classifier_selector import ClassifierSelector
 
 
 def cmd_classify(args: argparse.Namespace) -> None:

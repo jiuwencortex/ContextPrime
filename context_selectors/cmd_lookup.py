@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from jiuwenswarm.thalamus.context_selectors.cluster_selector import ClusterSelector
+from .cluster_selector import ClusterSelector
 
 
 def cmd_lookup(args: argparse.Namespace) -> None:

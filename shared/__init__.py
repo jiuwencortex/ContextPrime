@@ -15,8 +15,8 @@ Used by both oracle_builder and context_selectors.  Neither package imports the 
 both import from this shared layer.
 
 Usage:
-    from jiuwenswarm.thalamus.shared import TurnLogger, OutcomeScorer, score_from_llm_judge
-    from jiuwenswarm.thalamus.shared import DistributionMonitor, load_drift_status
+    from shared import TurnLogger, OutcomeScorer, score_from_llm_judge
+    from Fshared import DistributionMonitor, load_drift_status
 """
 
 from .outcome_scorer import OutcomeScorer, compute_outcome_quality, score_from_llm_judge

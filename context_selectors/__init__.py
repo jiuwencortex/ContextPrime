@@ -10,14 +10,14 @@ Utilities:
 
 Usage:
     # Phase 3 (cluster lookup — accepts query text):
-    from jiuwenswarm.thalamus.context_selectors import ClusterSelector
+    from context_selectors import ClusterSelector
     selector = ClusterSelector.load(oracle_dir)
     config = selector.select(user_query, budget="medium")             # explicit budget
     config = selector.select(user_query, budget="medium", ordering="bookend")  # bookend order
     config = selector.select_auto(user_query)                        # auto budget
 
     # Phase 4 (classifier — accepts pre-computed embedding):
-    from jiuwenswarm.thalamus.context_selectors import ClassifierSelector
+    from context_selectors import ClassifierSelector
     selector = ClassifierSelector.load(oracle_dir)
     result = selector.select(query_embedding)  # query_embedding: np.ndarray
 """

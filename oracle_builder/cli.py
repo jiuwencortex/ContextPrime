@@ -74,7 +74,7 @@ def _cmd_tune(args) -> None:
     # ── Classifier C / threshold tuning ──────────────────────────────────────
     if not getattr(args, "skip_classifier_tune", False):
         print("=== Classifier hyperparameter search (C × threshold grid) ===")
-        from jiuwenswarm.thalamus.oracle_builder.classifier.hyperparameter_search import HyperparameterSearch
+        from .classifier.hyperparameter_search import HyperparameterSearch
         search = HyperparameterSearch(
             log_dir=log_dir,
             max_weeks=args.max_weeks,
@@ -100,9 +100,9 @@ def _cmd_tune(args) -> None:
     # ── Cluster count K tuning ────────────────────────────────────────────────
     if not getattr(args, "skip_k_tune", False):
         print("=== Cluster count K tuning ===")
-        from jiuwenswarm.thalamus.oracle_builder.evolutionary.config_builder_step01_load_components import ComponentsLoader
-        from jiuwenswarm.thalamus.oracle_builder.evolutionary.config_builder_step02_collect_texts import TextsCollector
-        from jiuwenswarm.thalamus.oracle_builder.evolutionary.cluster_count_tuner import ClusterCountTuner
+        from .evolutionary.config_builder_step01_load_components import ComponentsLoader
+        from .evolutionary.config_builder_step02_collect_texts import TextsCollector
+        from .evolutionary.cluster_count_tuner import ClusterCountTuner
 
         loader = ComponentsLoader(args.oracle_dir)
         collector = TextsCollector()
@@ -132,7 +132,7 @@ def _cmd_tune(args) -> None:
     # ── Per-cluster λ tuning ──────────────────────────────────────────────────
     if not getattr(args, "skip_lambda_tune", False):
         print("=== Per-cluster λ tuning ===")
-        from jiuwenswarm.thalamus.oracle_builder.evolutionary.lambda_tuner import LambdaTuner
+        from .evolutionary.lambda_tuner import LambdaTuner
 
         lambda_tuner = LambdaTuner(
             log_dir=log_dir,
@@ -164,9 +164,9 @@ def _cmd_tune(args) -> None:
 def _cmd_status(args) -> None:
     """Run fresh drift + staleness checks and print a health summary."""
     import sys
-    from jiuwenswarm.thalamus.oracle_builder.staleness_checker import StalenessChecker
-    from jiuwenswarm.thalamus.oracle_builder.classifier.model_registry import ModelRegistry
-    from jiuwenswarm.thalamus.shared.distribution_monitor import DistributionMonitor
+    from .staleness_checker import StalenessChecker
+    from .classifier.model_registry import ModelRegistry
+    from ..shared.distribution_monitor import DistributionMonitor
 
     if not args.oracle_dir.exists():
         print(f"ERROR: --oracle-dir does not exist: {args.oracle_dir}", file=sys.stderr)
@@ -231,7 +231,7 @@ def _cmd_status(args) -> None:
 def _cmd_check_rebuild(args) -> None:
     """Check cached drift/staleness status and print rebuild recommendations."""
     import sys
-    from jiuwenswarm.thalamus.oracle_builder.retraining_scheduler import RetrainingScheduler
+    from .retraining_scheduler import RetrainingScheduler
 
     if not args.oracle_dir.exists():
         print(f"ERROR: --oracle-dir does not exist: {args.oracle_dir}", file=sys.stderr)
