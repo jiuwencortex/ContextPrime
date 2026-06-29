@@ -249,56 +249,6 @@ graph TD
     style EV fill:#fff3e0
     style GA fill:#fff3e0
 ```
-
-</details>
-
-<details>
-<summary>Mermaid diagram — Stage 1 internal detail</summary>
-
-```mermaid
-graph TD
-    subgraph SRC["Component Sources"]
-        SK["skills/"]
-        MEM["memory/"]
-        TOOLS["tools/"]
-    end
-
-    SCAN["Scan → ComponentRecord<br/>(name · description · body · path · mtime)"]
-    FP["SHA-256 fingerprint<br/>(name + description + mtime)"]
-    SKIP["Skip — unchanged<br/>no LLM calls"]
-
-    subgraph PER["Per new/changed component — up to 5 parallel workers"]
-        QG["LLM call 1: Query Generator<br/>input: component body<br/>temperature = 0.8<br/>output: 20 × (query, expected_answer)"]
-        FILT["Filter:<br/>drop if query < 10 chars<br/>or expected_answer < 5 chars"]
-        EV["LLM call 2: Evaluator — once per pair<br/>system prompt = component body<br/>user = query<br/>→ candidate_output"]
-        SCORE["Score candidate vs expected:<br/>F1 · Bigram F1 · Bag-of-Words · Length Ratio"]
-        MEAN["Aggregate across all pairs<br/>→ mean_score"]
-    end
-
-    MAT["scoring_matrix_TYPE_NAME.json<br/>(one file per component)"]
-
-    SK --> SCAN
-    MEM --> SCAN
-    TOOLS --> SCAN
-    SCAN --> FP
-    FP -->|unchanged| SKIP
-    FP -->|new or changed| QG
-    QG --> FILT
-    FILT --> EV
-    EV --> SCORE
-    SCORE -->|20 pairs × 4 metrics| MEAN
-    MEAN --> MAT
-
-    classDef src fill:#e8f5e9
-    classDef llm fill:#fff3e0
-    classDef out fill:#e3f2fd
-    classDef skip fill:#fce4ec
-    class SK,MEM,TOOLS src
-    class QG,EV llm
-    class MAT out
-    class SKIP skip
-```
-
 </details>
 
 ---
@@ -341,32 +291,122 @@ For each (query, expected_answer) pair:
 - Score candidate output against expected_answer using 4 lexical metrics
 
 Output: `scoring_matrix_TYPE_NAME.json` — one row per example
+<br>
+
+<details>
+<summary>Mermaid diagram — Stage 1 internal detail</summary>
+
+```mermaid
+graph TD
+    subgraph SRC["Component Sources"]
+        SK["skills/"]
+        MEM["memory/"]
+        TOOLS["tools/"]
+    end
+
+    SCAN["Scan → ComponentRecord<br/>(name · description · body · path · mtime)"]
+    FP["SHA-256 fingerprint<br/>(name + description + mtime)"]
+    SKIP["Skip — unchanged<br/>no LLM calls"]
+
+    subgraph PER["Per new/changed component — up to 5 parallel workers"]
+        QG["LLM call 1: Query Generator<br/>input: component body<br/>temperature = 0.8<br/>output: 20 × (query, expected_answer)"]
+        FILT["Filter:<br/>drop if query < 10 chars<br/>or expected_answer < 5 chars"]
+        EV["LLM call 2: Evaluator — once per pair<br/>system prompt = component body<br/>user = query<br/>→ candidate_output"]
+        SCORE["Score candidate vs expected:<br/>F1 · Bigram F1 · Bag-of-Words · Length Ratio · BERTScore · LLM judge"]
+        MEAN["Aggregate across all pairs<br/>→ mean_score"]
+    end
+
+    MAT["scoring_matrix_TYPE_NAME.json<br/>(one file per component)"]
+
+    SK --> SCAN
+    MEM --> SCAN
+    TOOLS --> SCAN
+    SCAN --> FP
+    FP -->|unchanged| SKIP
+    FP -->|new or changed| QG
+    QG --> FILT
+    FILT --> EV
+    EV --> SCORE
+    SCORE -->|20 pairs × selected metrics| MEAN
+    MEAN --> MAT
+
+    classDef src fill:#e8f5e9
+    classDef llm fill:#fff3e0
+    classDef out fill:#e3f2fd
+    classDef skip fill:#fce4ec
+    class SK,MEM,TOOLS src
+    class QG,EV llm
+    class MAT out
+    class SKIP skip
+```
+
+</details>
 
 ---
 
 ## Slide 9 — Path A, Stage 1: Scoring Metrics
 
-Four lexical metrics computed for each (candidate_output, expected_answer) pair:
+Six metrics are available. Each measures a different aspect of candidate quality. No single metric is sufficient — combining them reduces the risk that any one bias dominates.
 
+| Metric | What it measures | Included by default | Requirements | Strength | Weakness |
+|---|---|---|---|---|---|
+| F1 | Token-level precision/recall between candidate and expected output | Yes | None | Fast; widely understood | Penalizes paraphrases and different word order |
+| Bigram F1 | Same as F1 but over 2-gram sequences | Yes | None | Captures short phrases better | Still surface-form based |
+| Bag of Words | Word overlap ratio, order-independent | Yes | None | Better for reordered content | Ignores grammar and structure |
+| Length Ratio | min(len) / max(len) | Yes | None | Penalizes drastically different lengths | No semantic signal |
+| BERTScore | Embedding-based semantic similarity between candidate and expected | No | `bert-score` package | Captures paraphrases and semantic equivalence | Slower; requires model download |
+| LLM judge | Direct 1–10 quality rating from an LLM | No | LLM API key | Strongest semantic signal; works when packages cannot be installed | Slower; depends on judge model quality |
+
+**How `mean_score` is computed:**
 ```
-F1           = 2 × precision × recall  (at token level)
-             = 2 × |tokens(output) ∩ tokens(expected)| /
-               (|tokens(output)| + |tokens(expected)|)
-
-Bigram F1    = same as F1 but over 2-gram sequences
-
-Bag of Words = word overlap ratio, order-independent
-             = |words(output) ∩ words(expected)| /
-               max(|words(output)|, |words(expected)|)
-
-Length Ratio = min(|output|, |expected|) / max(|output|, |expected|)
+mean_score = average of all selected metrics across all N example pairs
 ```
 
-Component's `mean_score` = mean of all four metrics across all N examples.
+Select metrics with `--metrics` (comma-separated). Default: `f1,bigram_f1,bag_of_words,length_ratio`. Add semantic metrics: `--metrics f1,bigram_f1,bert_score,llm_judge`.
 
-**Optional semantic metrics:** BERTScore (embedding-based semantic similarity) and LLM judge (direct rating on a 1–10 scale) are available via `--metrics`. They address the paraphrase-blindness of lexical metrics but require extra dependencies or LLM calls during scoring.
+**Combination scoring:** `--eval-combination-size N` evaluates the component alongside N−1 random other components (instead of in isolation). This captures joint effects that isolated evaluation misses, at the cost of N× more LLM calls. Default: 1 (isolated evaluation).
 
-Why lexical? Not because it is perfect. Because it is cheap to compute, requires no LLM at search time, and provides a relative ordering signal that is good enough to guide evolutionary search. The goal is direction, not precision.
+Why six metrics? The evolutionary search only needs a relative ordering signal, not absolute precision. Multiple metrics from different families (lexical overlap, embedding similarity, LLM judgment) make the signal more robust against any single metric's blind spots.
+
+<br>
+
+<details>
+<summary>Mermaid diagram — metrics computation flow</summary>
+
+```mermaid
+graph TD
+    subgraph PAIRS["Per (query, expected_answer) pair"]
+        P1["pair 1"] --> M1["F1"]
+        P1 --> M2["Bigram F1"]
+        P1 --> M3["Bag-of-Words"]
+        P1 --> M4["Length Ratio"]
+        P1 --> M5["BERTScore"]
+        P1 --> M6["LLM judge"]
+    end
+
+    AGG["Average across selected metrics<br/>→ pair_score"]
+    M1 -.-> AGG
+    M2 -.-> AGG
+    M3 -.-> AGG
+    M4 -.-> AGG
+    M5 -.-> AGG
+    M6 -.-> AGG
+
+    ALL["Average across all 20 pairs<br/>→ mean_score"]
+    AGG --> ALL
+    ALL --> MAT["scoring_matrix_TYPE_NAME.json"]
+
+    classDef pair fill:#e8f5e9
+    classDef metric fill:#fff3e0
+    classDef agg fill:#e3f2fd
+    classDef out fill:#fce4ec
+    class P1 pair
+    class M1,M2,M3,M4,M5,M6 metric
+    class AGG,ALL agg
+    class MAT out
+```
+
+</details>
 
 ---
 
@@ -393,6 +433,33 @@ Behavior:
 - Between 0 and 100 → smooth interpolation
 
 Path A Stage 2 is optional. The rest of Path A runs correctly without it.
+<br>
+
+<details>
+<summary>Mermaid diagram — Bayesian blending</summary>
+
+```mermaid
+graph TD
+    SM1["scoring_matrix_*.json<br/>[synthetic mean_score]"] --> BLEND["Bayesian blending"]
+    TURNS["turns_YYYY-WNN.jsonl<br/>[real outcomes per component]"] --> BLEND
+
+    BLEND -->|"n_real = 0"| W1["synthetic_weight = 1.0<br/>updated = synthetic"]
+    BLEND -->|"n_real = 100"| W2["synthetic_weight = 0.0<br/>updated = real_mean"]
+    BLEND -->|"0 < n_real < 100"| W3["smooth interpolation"]
+
+    BLEND --> SM2["scoring_matrix_*.json<br/>[updated_mean_score]"]
+
+    classDef syn fill:#e3f2fd
+    classDef real fill:#e8f5e9
+    classDef blend fill:#fff3e0
+    classDef out fill:#fce4ec
+    class SM1 syn
+    class TURNS real
+    class BLEND,W1,W2,W3 blend
+    class SM2 out
+```
+
+</details>
 
 ---
 
@@ -414,6 +481,38 @@ Default: K = 20 clusters.
 **Query centroid per component:** for each component, compute the mean embedding over all its example input texts. This is the component's "center of mass" in query space — used in the fitness function during search.
 
 The fitted clusterer is saved as `context_configs.pkl`. The same backend must be used at runtime to assign new queries to clusters.
+<br>
+
+<details>
+<summary>Mermaid diagram — clustering pipeline</summary>
+
+```mermaid
+graph TD
+    TXTS["example_input texts<br/>from all matrices"] --> VEC["Vectorize"]
+
+    VEC -->|"TF-IDF (default)<br/>vocab=2000"| K1["K-means (K=20)"]
+    VEC -->|"sentence-transformer<br/>all-MiniLM-L6-v2"| K2["K-means (K=20)"]
+
+    K1 --> CLUST["cluster assignments"]
+    K1 --> CENT["cluster centroids"]
+    K2 --> CLUST
+    K2 --> CENT
+
+    TXTS --> COMP["per-component mean<br/>query centroid"]
+
+    CLUST --> OUT["context_configs.pkl<br/>+ context_configs.json"]
+    CENT --> OUT
+    COMP --> OUT
+
+    classDef input fill:#e8f5e9
+    classDef backend fill:#fff3e0
+    classDef out fill:#e3f2fd
+    class TXTS input
+    class K1,K2 backend
+    class OUT out
+```
+
+</details>
 
 ---
 
@@ -632,58 +731,6 @@ graph TD
 
 </details>
 
-<details>
-<summary>Mermaid diagram — fitness function computation detail</summary>
-
-```mermaid
-graph TD
-    subgraph INPUTS["Inputs for one genome evaluation"]
-        V["v = cluster centroid embedding<br/>(fixed for this optimization target)"]
-        CI["component i data:<br/>mean_score_i · centroid_i · tokens_i"]
-        BI["bit_i ∈ {0, 1}<br/>(from genome)"]
-        BUD["budget = token limit<br/>(2000 / 4000 / 8000)"]
-    end
-
-    subgraph PER["Per-component — computed for all N components"]
-        COS["cosine(v, centroid_i)<br/>how relevant is component i to this cluster?"]
-        MUL["contribution_i =<br/>mean_score_i × cosine_i × bit_i"]
-        TK["token_use_i = tokens_i × bit_i"]
-        CI --> COS
-        V --> COS
-        COS --> MUL
-        CI --> MUL
-        BI --> MUL
-        BI --> TK
-        CI --> TK
-    end
-
-    subgraph AGG["Aggregate across all N components"]
-        REWARD["reward = Σᵢ contribution_i<br/>(sum of quality × relevance for included components)"]
-        TSUM["token_sum = Σᵢ token_use_i"]
-        PEN["penalty = 0.1 × token_sum / budget"]
-        OVB["token_sum > budget?<br/>→ heavy negative override"]
-        FIT["fitness(b) = reward − penalty"]
-        MUL --> REWARD
-        TK --> TSUM
-        TSUM --> PEN
-        TSUM --> OVB
-        REWARD --> FIT
-        PEN --> FIT
-        OVB --> FIT
-    end
-
-    classDef inp fill:#e8f5e9
-    classDef per fill:#fff3e0
-    classDef agg fill:#e3f2fd
-    classDef out fill:#fce4ec
-    class V,CI,BI,BUD inp
-    class COS,MUL,TK per
-    class REWARD,TSUM,PEN agg
-    class OVB,FIT out
-```
-
-</details>
-
 ---
 
 ## Slide 14 — Path A, Stage 4a: Evolutionary Search Setup
@@ -753,6 +800,58 @@ Nobody derived it from a theorem. It was constructed by asking: "what are the tw
 </details>
 
 <details>
+<summary>Mermaid diagram — fitness computation pipeline</summary>
+
+```mermaid
+graph TD
+    subgraph INPUTS["Inputs for one genome"]
+        V["v = cluster centroid embedding<br/>(fixed for this optimization target)"]
+        CI["component i data:<br/>mean_score_i · centroid_i · tokens_i"]
+        BI["bit_i ∈ {0, 1}<br/>(from genome)"]
+        BUD["budget = token limit<br/>(2000 / 4000 / 8000)"]
+    end
+
+    subgraph PER["Per-component — computed for all N components"]
+        COS["cosine(v, centroid_i)<br/>how relevant is component i to this cluster?"]
+        MUL["contribution_i =<br/>mean_score_i × cosine_i × bit_i"]
+        TK["token_use_i = tokens_i × bit_i"]
+        CI --> COS
+        V --> COS
+        COS --> MUL
+        CI --> MUL
+        BI --> MUL
+        BI --> TK
+        CI --> TK
+    end
+
+    subgraph AGG["Aggregate across all N components"]
+        REWARD["reward = Σᵢ contribution_i<br/>(sum of quality × relevance for included components)"]
+        TSUM["token_sum = Σᵢ token_use_i"]
+        PEN["penalty = 0.1 × token_sum / budget"]
+        OVB["token_sum > budget?<br/>→ heavy negative override"]
+        FIT["fitness(b) = reward − penalty"]
+        MUL --> REWARD
+        TK --> TSUM
+        TSUM --> PEN
+        TSUM --> OVB
+        REWARD --> FIT
+        PEN --> FIT
+        OVB --> FIT
+    end
+
+    classDef inp fill:#e8f5e9
+    classDef per fill:#fff3e0
+    classDef agg fill:#e3f2fd
+    classDef out fill:#fce4ec
+    class V,CI,BI,BUD inp
+    class COS,MUL,TK per
+    class REWARD,TSUM,PEN agg
+    class OVB,FIT out
+```
+
+</details>
+
+<details>
 <summary>Gap to real ML</summary>
 
 The fitness function is not learned — it is hand-crafted and fixed. In a real ML system, the weights inside the formula would themselves come from data.
@@ -781,6 +880,28 @@ Definition: genome A dominates genome B if:
 The Pareto front contains configs where no alternative is simultaneously better in quality and more token-efficient. These are the candidates for final selection per budget tier.
 
 For each budget tier: pick the highest-fitness Pareto genome whose total tokens ≤ budget. If none fit, take the smallest genome on the front.
+<br>
+
+<details>
+<summary>Mermaid diagram — Pareto front extraction</summary>
+
+```mermaid
+graph LR
+    A["genome A<br/>fitness=0.80<br/>tokens=1500"] -->|"dominates"| B["genome B<br/>fitness=0.70<br/>tokens=1600"]
+    C["genome C<br/>fitness=0.85<br/>tokens=2000"]
+    D["genome D<br/>fitness=0.75<br/>tokens=1500"]
+
+    A -.-|"same tokens,<br/>higher fitness"| D
+    A -.-|"higher fitness,<br/>more tokens"| C
+
+    PF["Pareto front:<br/>non-dominated genomes<br/>{A, C, D}"]
+    A --> PF
+    C --> PF
+    D --> PF
+    B -.-|"excluded:<br/>dominated by A"| PF
+```
+
+</details>
 
 ---
 
@@ -806,6 +927,32 @@ combined = proxy_fitness × 0.5 + llm_normalized × 0.5
 Re-rank the Pareto front by combined score. Select best-per-budget from the re-ranked list.
 
 Uses `urllib.request` — no new runtime dependency. Requires `--eval-api-key`. Uses a fast model by default (`gpt-4o-mini`).
+<br>
+
+<details>
+<summary>Mermaid diagram — LLM Pareto validation</summary>
+
+```mermaid
+graph TD
+    PF["Pareto front genomes"] --> REP["Sample up to 3<br/>cluster queries"]
+    REP --> PROMPT["Assemble component<br/>names → prompt"]
+    PROMPT --> LLM["LLM rates 1–10"]
+    LLM --> NORM["(avg − 1) / 9<br/>→ [0, 1]"]
+
+    PROXY["proxy_fitness"] --> COMB["combined = 0.5 × proxy + 0.5 × llm"]
+    NORM --> COMB
+    COMB --> RERANK["Re-rank Pareto front"]
+    RERANK --> SELECT["Select best per budget"]
+
+    classDef proxy fill:#e3f2fd
+    classDef llm fill:#fff3e0
+    classDef out fill:#e8f5e9
+    class PF,PROXY proxy
+    class REP,PROMPT,LLM,NORM llm
+    class COMB,RERANK,SELECT out
+```
+
+</details>
 
 ---
 
@@ -820,6 +967,28 @@ relevance_i = mean_score_i × cosine(cluster_centroid, query_centroid_i)
 Components stored most-relevant-first.
 
 Why: at runtime the caller may want to apply a bookend ordering strategy without re-computing per-component scores. Having the components pre-sorted means bookend rearrangement is a simple list operation at query time — no score lookup required.
+<br>
+
+<details>
+<summary>Mermaid diagram — relevance ordering</summary>
+
+```mermaid
+graph TD
+    CONF["Selected config<br/>(best genome within budget)"] --> REL["relevance_i = mean_score_i × cosine(v, centroid_i)"]
+    REL --> SORT["Sort descending by relevance_i"]
+    SORT --> STORE["Store most-relevant-first<br/>in context_configs.json"]
+
+    QT["At query time"] -->|"relevance"| R1["Return as-is"]
+    QT -->|"bookend"| R2["Rearrange edges-first:<br/>[A, C, E, D, B]"]
+    QT -->|"none"| R3["No rearrangement"]
+
+    classDef build fill:#e3f2fd
+    classDef runtime fill:#e1f5fe
+    class CONF,REL,SORT,STORE build
+    class QT,R1,R2,R3 runtime
+```
+
+</details>
 
 ---
 
@@ -878,6 +1047,29 @@ The primary query time inference path. Uses Path A Stage 5 artifacts (`context_c
 Total latency: under 10 milliseconds (once artifacts are loaded).
 
 `ClusterSelector.select_all_budgets(query, ordering)`: returns configs for all three budget tiers in one call. Useful for inspection or when the caller wants to choose the budget dynamically.
+<br>
+
+<details>
+<summary>Mermaid diagram — query time cluster lookup</summary>
+
+```mermaid
+graph TD
+    Q["query text"] --> VEC["Vectorize<br/>(same backend as build)"]
+    VEC --> PRED["K-means predict"]
+    PRED --> LOOKUP["JSON lookup:<br/>clusters[k].optimal_configs[budget]"]
+    LOOKUP --> ORDER["Apply ordering<br/>(relevance / bookend / none)"]
+    ORDER --> RET["Return config<br/>+ fitness + context_tokens"]
+
+    BE["BudgetEstimator"] -->|"auto"| BUD["budget tier:<br/>small / medium / large"]
+
+    classDef query fill:#e1f5fe
+    classDef data fill:#e8f5e9
+    classDef tool fill:#fff3e0
+    class Q,VEC,PRED,LOOKUP,ORDER,RET query
+    class BE,BUD tool
+```
+
+</details>
 
 ---
 
@@ -901,6 +1093,28 @@ Motivation: LLMs attend more strongly to text near the beginning and end of the 
 Return the raw stored order without rearrangement.
 
 `bookend_order()` is implemented in `shared/context_orderer.py` and used by `ClusterSelector._apply_ordering()`.
+<br>
+
+<details>
+<summary>Mermaid diagram — ordering modes</summary>
+
+```mermaid
+graph LR
+    IN["[A, B, C, D, E]<br/>stored most-relevant-first"] -->|"relevance"| REL["[A, B, C, D, E]<br/>as-is"]
+    IN -->|"bookend"| BOOK["[A, C, E, D, B]<br/>edges-first"]
+    IN -->|"none"| NONE["[A, B, C, D, E]<br/>no change"]
+
+    classDef in fill:#e3f2fd
+    classDef rel fill:#e8f5e9
+    classDef book fill:#fff3e0
+    classDef none fill:#fce4ec
+    class IN in
+    class REL rel
+    class BOOK book
+    class NONE none
+```
+
+</details>
 
 ---
 
@@ -933,6 +1147,34 @@ Heuristic rules, applied in order:
 The estimated budget is returned in the config under the `"budget"` key so the caller can see what was inferred.
 
 `BudgetEstimator` lives in `context_selectors/budget_estimator.py`. It has no dependency on the clusterer or the artifacts — it is a pure text heuristic.
+<br>
+
+<details>
+<summary>Mermaid diagram — budget estimation rules</summary>
+
+```mermaid
+graph TD
+    Q["query text"] --> WC["Word count"]
+
+    WC -->|"< 8"| S["small"]
+    WC -->|"multi-step<br/>language detected"| L1["large"]
+    WC -->|"> 35"| L2["large"]
+    WC -->|"otherwise"| M["medium"]
+
+    S --> OUT1["budget: small<br/>2000 tokens"]
+    L1 --> OUT2["budget: large<br/>8000 tokens"]
+    L2 --> OUT2
+    M --> OUT3["budget: medium<br/>4000 tokens"]
+
+    classDef short fill:#e8f5e9
+    classDef long fill:#fce4ec
+    classDef mid fill:#fff3e0
+    class S short
+    class L1,L2 long
+    class M mid
+```
+
+</details>
 
 ---
 
@@ -1545,8 +1787,6 @@ graph TD
         MON_DRIFT -->|recommend| MON_REC["rebuild / retrain"]
         MON_STALE --> MON_REC
     end
-
-    PB_LOG -.->|Stage 2 enrichment| PA2
 
     subgraph "Query Time"
         PA5 -->|ClusterSelector| QA["query text → cluster → config"]
