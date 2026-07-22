@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch, MagicMock
 import pytest
 import shutil
 
-from skill_discovery import (
+from thalamus.skill_discovery import (
     parse_skill_yaml,
     discover_skills,
     rank_skills,
