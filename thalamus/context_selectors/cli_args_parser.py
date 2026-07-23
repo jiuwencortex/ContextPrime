@@ -10,8 +10,9 @@ def make_parser() -> argparse.ArgumentParser:
         prog="python -m thalamus.context_selectors",
         description=(
             "Runtime context selection tools.\n\n"
-            "  lookup   — cluster-based lookup using context_configs.json\n"
-            "  classify — classifier-based selection using classifier.pkl"
+            "  lookup          — cluster-based lookup using context_configs.json\n"
+            "  classify        — classifier-based selection using classifier.pkl\n"
+            "  baseline-lookup — retrieval baselines for research evaluation (R1)"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -63,6 +64,45 @@ def make_parser() -> argparse.ArgumentParser:
     classify.add_argument(
         "--verbose", action="store_true",
         help="Show per-component probability scores",
+    )
+
+    # Subcommand: baseline retrieval lookup (Phase R1)
+    baseline = sub.add_parser(
+        "baseline-lookup",
+        help="Run a query through a retrieval baseline (research evaluation Phase R1)",
+    )
+    baseline.add_argument(
+        "--oracle-dir", required=True, type=Path,
+        help="Directory containing scoring matrices (and optionally context_configs.json)",
+    )
+    baseline.add_argument(
+        "--query", default=None,
+        help="Query text to evaluate",
+    )
+    baseline.add_argument(
+        "--method", nargs="+",
+        choices=["all", "random", "tfidf", "bm25", "dense"],
+        default=["tfidf"],
+        help=(
+            "Baseline method(s) to run.  Multiple values produce a comparison table.\n"
+            "  all    — return every component (quality upper bound)\n"
+            "  random — random k components (null hypothesis)\n"
+            "  tfidf  — TF-IDF cosine similarity top-k\n"
+            "  bm25   — BM25 top-k (no extra deps)\n"
+            "  dense  — sentence-transformer cosine top-k (requires thalamus[sentence])"
+        ),
+    )
+    baseline.add_argument(
+        "--budget", default="medium", choices=["small", "medium", "large", "auto"],
+        help="Budget tier (default: medium).  'auto' passes None to let the selector decide.",
+    )
+    baseline.add_argument(
+        "--ordering", default="bookend", choices=["relevance", "bookend", "none"],
+        help="Component ordering strategy (default: bookend)",
+    )
+    baseline.add_argument(
+        "--seed", type=int, default=None,
+        help="Random seed for the 'random' baseline (default: None = system entropy)",
     )
 
     return p
