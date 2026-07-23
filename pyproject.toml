@@ -23,11 +23,13 @@ all = ["thalamus[sentence,bertscore]"]
 
 [project.scripts]
 # Phase 1 — score each component against a representative query sample
-thalamus-score  = "thalamus.component_scoring.cli:main"
+thalamus-score    = "thalamus.component_scoring.cli:main"
 # Phase 3 — build / retrain / tune the oracle from scoring matrices
-thalamus-oracle = "thalamus.oracle_builder.cli:main"
-# Runtime — assign a query to a context configuration
-thalamus-select = "thalamus.context_selectors.cli:main"
+thalamus-oracle   = "thalamus.oracle_builder.cli:main"
+# Runtime — assign a query to a context configuration (production)
+thalamus-select   = "thalamus.context_selectors.cli:main"
+# Research — baseline selectors, evaluation harness, and future R2-R5 tools
+thalamus-research = "thalamus.research.cli:main"
 
 # ── Package discovery ────────────────────────────────────────────────────────
 # All sub-systems live under thalamus/ — a single namespace package.

@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from ..shared.context_orderer import bookend_order
+from thalamus.shared.context_orderer import bookend_order
 from .component_catalog import ComponentCatalog, ComponentEntry
 
 logger = logging.getLogger(__name__)

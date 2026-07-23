@@ -27,12 +27,6 @@ def main() -> None:
         cmd_lookup(args)
     elif args.command == "classify":
         cmd_classify(args)
-    elif args.command == "baseline-lookup":
-        from ..baselines.cmd_baseline_lookup import cmd_baseline_lookup
-        cmd_baseline_lookup(args)
-    elif args.command == "eval":
-        from ..evaluation.cmd_eval import cmd_eval
-        cmd_eval(args)
 
 
 if __name__ == "__main__":

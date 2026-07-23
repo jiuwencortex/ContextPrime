@@ -21,7 +21,7 @@ import statistics
 import time
 from pathlib import Path
 
-from ..baselines.protocol import SelectorProtocol
+from thalamus.research.baselines.protocol import SelectorProtocol
 from .overlap_stats import compute_overlap
 from .result_schema import AggregateStats, EvalRun, QueryResult, SelectorResult
 
