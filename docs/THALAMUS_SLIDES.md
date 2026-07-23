@@ -63,6 +63,10 @@ PATH B — CLASSIFIER PATH (data-rich, >= 500 turns):
   Classifier Training               → logistic regression → classifier.pkl
 
   QUERY TIME: ClassifierSelector       → predict from query embedding
+
+UNIFIED ENTRY POINT (recommended for all callers):
+  ContextSelector.load(oracle_dir)  → tries Path B, falls back to Path A, returns None if neither available
+  ContextSelector.select(query)     → {skills, memory, tools, ...} | None
 ```
 <br>
 
@@ -104,7 +108,8 @@ Key property: **no LLM calls at query time**. All expensive computation is front
 ```
 component_scoring/    Path A Stages 1 + 2 — scans components, runs LLM scoring, enriches with real data
 oracle_builder/       Path A Stages 3–5 + Path B — evolutionary search, classifier training
-context_selectors/    Query time inference — ClusterSelector, ClassifierSelector, BudgetEstimator
+context_selectors/    Query time inference — ContextSelector (unified entry point),
+                      ClusterSelector, ClassifierSelector, BudgetEstimator
 shared/               Utilities used by all: TurnLogger, OutcomeScorer,
                       QueryClusterer, ComponentInclusionClassifier, bookend_order
 ```
@@ -121,6 +126,11 @@ PATH A (evolutionary selector):
 PATH B (classifier path):
   shared (TurnLogger) → turns_YYYY-WNN.jsonl → oracle_builder (train-classifier)
   oracle_builder      → classifier.pkl → context_selectors (ClassifierSelector)
+
+UNIFIED ENTRY POINT (preferred for all callers):
+  ContextSelector.load(oracle_dir)
+    → loads both paths if available (neither is required)
+    → select(query): tries Path B first, falls back to Path A, returns None if neither available
 
 Both paths read from shared logging for their own purposes.
 ```
@@ -1709,7 +1719,7 @@ Keeping paths independent was the right early architectural choice: simpler to b
 
 ## Slide 35 — System Maturity Levels
 
-The system has defined behavior at every maturity level. Automatic monitoring (`status`, `check-rebuild`) detects drift and staleness and recommends when to retrain or rebuild. The caller chooses between two paths based on the situation:
+The system has defined behavior at every maturity level. Automatic monitoring (`status`, `check-rebuild`) detects drift and staleness and recommends when to retrain or rebuild. `ContextSelector` automatically selects the best available path at each maturity level:
 
 | System state | Path | Behavior |
 |---|---|---|
@@ -1719,7 +1729,7 @@ The system has defined behavior at every maturity level. Automatic monitoring (`
 | 500+ turns, classifier trained | Path B — Classifier | Per-component inclusion prediction from query embedding |
 | Classifier not yet trained | Path A — Cluster | Path A cluster lookup works at all times, regardless of Path B state |
 
-Both paths are always valid. The system never fails. The caller decides which to use based on its own policy.
+Both paths are always valid. The system never fails. `ContextSelector.load(oracle_dir)` handles path selection automatically — no policy logic required in the caller.
 
 ---
 
@@ -1779,7 +1789,11 @@ MONITORING:
   component sources (skills/memory/tools)  →  staleness_checker  →  staleness_status.json
   drift_status + staleness_status  →  retraining_scheduler  →  rebuild recommendation
 
-QUERY TIME (two selectors):
+QUERY TIME (unified entry point):
+
+ContextSelector.load(oracle_dir)          ← recommended for all callers
+  → select(query)
+      tries Path B first, falls back to Path A, returns None if neither available
 
 Path A — ClusterSelector:
   query text
@@ -1790,7 +1804,7 @@ Path A — ClusterSelector:
     → return {skills, memory, tools}
 
 Path B — ClassifierSelector:
-  query embedding
+  query embedding (from shared clusterer in context_configs.pkl)
     → σ(W·e + b) per component
     → include if probability > 0.5
     → return {skills, memory, tools, confidence}
@@ -1917,6 +1931,21 @@ python -m jiuwenswarm.thalamus.context_selectors classify \
     --oracle-dir /oracle --embedding ./query.npy --threshold 0.5 --verbose
 ```
 
+**Python API (unified entry point — recommended):**
+
+```python
+from thalamus.context_selectors import ContextSelector
+
+selector = ContextSelector.load("/oracle")
+print(selector.active_path)          # "classifier" | "cluster" | "none"
+
+result = selector.select("Set up a CI pipeline")
+# result = {"skills": [...], "memory": [...], "tools": [...], ...}
+# result is None if no oracle is available (neither path loaded)
+```
+
+`ContextSelector` tries Path B first, falls back to Path A, and returns `None` if neither is available. Callers do not need to check which path is active or handle fallback themselves.
+
 ---
 
 ## Slide 40 — Key Parameters Reference
@@ -2011,7 +2040,7 @@ What remains to move THALAMUS from a well-engineered MLOps system toward full Au
 2. Train a logistic regression classifier on raw logged turn outcomes → `classifier.pkl`
 3. Query time: ClassifierSelector predicts inclusion from the query embedding
 
-The classifier is the heart of Path B. It learns directly from raw JSONL logs. Both paths solve the same problem and the caller chooses which to use based on available data and its own policy.
+The classifier is the heart of Path B. It learns directly from raw JSONL logs. Both paths solve the same problem. `ContextSelector` (the recommended entry point) handles path selection automatically: it tries Path B first, falls back to Path A, and returns `None` if neither is available — so the caller never needs to implement fallback logic itself.
 
 **Key supporting mechanisms:**
 - Sentence-transformer clustering for paraphrase-robust query assignment

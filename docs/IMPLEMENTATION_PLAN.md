@@ -123,6 +123,14 @@ The following is what exists in code today, as described in the main body of tha
 - `select_auto()` with BudgetEstimator
 - Under 10 ms latency
 
+**Unified Entry Point — ContextSelector** (`context_selectors/context_selector.py`)
+- Wraps both `ClusterSelector` and `ClassifierSelector`
+- `ContextSelector.load(oracle_dir)` — loads whichever paths are available; no error if either is absent
+- `select(query, budget=None, ordering="bookend")` → tries Path B first, falls back to Path A, returns `None` if neither available
+- `active_path` property → `"classifier"` | `"cluster"` | `"none"`
+- `is_ready` property → `False` when oracle dir is empty or missing
+- Recommended entry point for all external callers (jiuwenswarm, integration code)
+
 ### Path B — Classifier Path
 
 **Turn Logging** (`shared/turn_logger.py`)
@@ -153,6 +161,7 @@ The following is what exists in code today, as described in the main body of tha
 
 ### Shared Infrastructure
 
+- `ContextSelector`: unified facade — tries Path B (classifier) first, falls back to Path A (cluster), returns `None` if neither is available; recommended entry point for all callers
 - `BudgetEstimator`: word count + multi-step regex heuristic → small/medium/large
 - `bookend_order()`: rearranges relevance-sorted list to place most-relevant at context edges
 - `QueryClusterer`: dual TF-IDF / sentence-transformer backend

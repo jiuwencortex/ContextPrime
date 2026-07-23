@@ -373,7 +373,7 @@ flowchart LR
     style D fill:#d4edda
 ```
 
-The `source` field in the returned configuration is always `"classifier"`. The caller is responsible for deciding whether to fall back to `ClusterSelector` based on the returned `confidence` score. `ClassifierSelector` and `ClusterSelector` are fully independent: neither imports nor calls the other.
+The `source` field in the returned configuration is always `"classifier"`. `ClassifierSelector` and `ClusterSelector` are fully independent: neither imports nor calls the other. The `ContextSelector` facade wraps both and implements the Path B → Path A → `None` fallback automatically — it is the recommended entry point for callers that do not need to control path selection directly. Callers using `ClassifierSelector` directly are responsible for deciding whether to fall back to `ClusterSelector` based on the returned `confidence` score.
 
 ### 8.3 Turn Logging at Runtime
 
@@ -395,7 +395,7 @@ graph TD
     end
 
     subgraph Runtime ["Runtime Inference"]
-        CTX[context_selectors\nPhase 3 + Phase 4 Inference\nClusterSelector · ClassifierSelector · BudgetEstimator]
+        CTX[context_selectors\nPhase 3 + Phase 4 Inference\nContextSelector · ClusterSelector · ClassifierSelector · BudgetEstimator]
     end
 
     subgraph Shared ["Shared Utilities"]
@@ -413,7 +413,7 @@ graph TD
 
 **`oracle_builder/`** handles Phases 3 and 4. The `evolutionary/` subpackage implements the seven-step config building pipeline, including optional sentence-transformer clustering, component relevance sorting, and optional LLM Pareto validation. The `classifier/` subpackage implements the supervised classifier trainer. It has no dependency on `context_selectors`.
 
-**`context_selectors/`** handles runtime inference. It loads the artifacts produced by `oracle_builder` and provides `ClusterSelector` (with relevance ordering, bookend ordering, and auto-budget support), `ClassifierSelector`, and `BudgetEstimator`. It has no dependency on `oracle_builder` or `component_scoring`.
+**`context_selectors/`** handles runtime inference. It loads the artifacts produced by `oracle_builder` and provides `ContextSelector` (the unified entry point: attempts Path B classifier first, falls back to Path A cluster lookup, returns `None` if neither is available), `ClusterSelector` (with relevance ordering, bookend ordering, and auto-budget support), `ClassifierSelector`, and `BudgetEstimator`. It has no dependency on `oracle_builder` or `component_scoring`.
 
 **`shared/`** contains utilities used by more than one package: `TurnLogger` (with off-policy exploration), `OutcomeScorer`, `QueryClusterer` (dual TF-IDF / sentence-transformer backend), `ComponentInclusionClassifier`, and `bookend_order`. It has no dependencies on other packages in the system.
 

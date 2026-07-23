@@ -1,29 +1,29 @@
 """Runtime context selection for agent queries.
 
-Two independent backends:
-  - cluster_selector.py     Phase 3 — cluster-based lookup (text in, instant, no model)
-  - classifier_selector.py  Phase 4 — trained linear classifier (embedding in, per-component proba)
+Recommended entry point
+-----------------------
+Use :class:`ContextSelector` for all production callers.  It handles the
+Path B → Path A → None fallback automatically::
 
-Utilities:
-  - budget_estimator.py     Heuristic budget estimator (auto small/medium/large)
-  - context_orderer.py      (in shared/) bookend ordering for lost-in-the-middle mitigation
+    from thalamus.context_selectors import ContextSelector
 
-Usage:
-    # Phase 3 (cluster lookup — accepts query text):
-    from thalamus.context_selectors import ClusterSelector
-    selector = ClusterSelector.load(oracle_dir)
-    config = selector.select(user_query, budget="medium")             # explicit budget
-    config = selector.select(user_query, budget="medium", ordering="bookend")  # bookend order
-    config = selector.select_auto(user_query)                        # auto budget
+    selector = ContextSelector.load(oracle_dir)
+    result = selector.select(user_query)   # dict | None
+    # result = {"skills": [...], "memory": [...], "tools": [...], ...}
 
-    # Phase 4 (classifier — accepts pre-computed embedding):
-    from thalamus.context_selectors import ClassifierSelector
-    selector = ClassifierSelector.load(oracle_dir)
-    result = selector.select(query_embedding)  # query_embedding: np.ndarray
+Low-level backends (use directly only when you need fine-grained control)
+--------------------------------------------------------------------------
+- :class:`ClusterSelector`   Phase 3 — cluster-based lookup (text in, instant)
+- :class:`ClassifierSelector` Phase 4 — trained linear classifier (embedding in)
+
+Utilities
+---------
+- :class:`BudgetEstimator`   Heuristic budget estimator (auto small/medium/large)
 """
 
+from .context_selector import ContextSelector
 from .by_clusters.cluster_selector import ClusterSelector
 from .by_classifier.classifier_selector import ClassifierSelector
 from .by_clusters.budget_estimator import BudgetEstimator
 
-__all__ = ["ClusterSelector", "ClassifierSelector", "BudgetEstimator"]
+__all__ = ["ContextSelector", "ClusterSelector", "ClassifierSelector", "BudgetEstimator"]
