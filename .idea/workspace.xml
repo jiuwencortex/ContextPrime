@@ -1,13 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="525e7547-7e57-4de0-a4ef-216eb3f02bbc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/future-roadmap.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/runners/run_01_score.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/runners/run_02_oracle.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/runners/run_03_classifier.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/runners/run_04_select.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/runners/run_all.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ContextPrime.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Thalamus.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/IMPLEMENTATION_PLAN.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/IMPLEMENTATION_PLAN.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-0-rename-restructure.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-1-memory-scoring.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-2-tool-scoring.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-3-evolutionary-search.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-4-online-learning.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-5-gaps-closing.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/phase-6-multi-agent.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/mishka/PycharmProjects/openjiuwencortex/Thalamus" value="3GtYaOJoJgLxnAP2dNxKY44HFpF" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="122" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "michaelatamuk"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:jiuwencortex/Thalamus.git",
+    "accountId": "e0b58b04-487c-464b-8662-352ae87dfb27"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3GtYaOJoJgLxnAP2dNxKY44HFpF" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;settings.editor.selected.configurable&quot;: &quot;http.proxy&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/mishka/PycharmProjects/openjiuwencortex/Thalamus",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "http.proxy",
+    "to.speed.mode.migration.done": "true"
   }
-}</component>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-PY-262.8665.309" />
+        <option value="bundled-python-sdk-c6d794e1806d-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.8665.309" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="525e7547-7e57-4de0-a4ef-216eb3f02bbc" name="Changes" comment="" />
+      <created>1784792394405</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1784792394405</updated>
+      <workItem from="1784792395414" duration="879000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
 </project>

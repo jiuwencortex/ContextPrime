@@ -1,5 +1,10 @@
 # THALAMUS — Implementation Plan
 
+> **Last reviewed:** July 2025
+> Steps 1–5 are complete. Steps 6–8 are not started and are **blocked** on
+> operational deployment: the system must be running and accumulating real
+> agent turn logs before Steps 6–8 can be meaningfully implemented or tested.
+
 This document identifies what is currently built, what the doc describes as gaps to real ML, and provides a step-by-step plan to implement everything the slides describe.
 
 ---
@@ -13,9 +18,9 @@ This document identifies what is currently built, what the doc describes as gaps
 | 3 | Hyperparameter Tuning | ✅ Done |
 | 4 | Semantic Scoring | ✅ Done |
 | 5 | Drift Detection + Auto-rebuild Triggers | ✅ Done (5f skipped — see note) |
-| 6 | Cross-Path Learning | ⬜ Not started |
-| 7 | Learned Fitness Function | ⬜ Not started |
-| 8 | Joint Component Modeling | ⬜ Not started |
+| 6 | Cross-Path Learning | ⬜ Blocked — needs turn logs |
+| 7 | Learned Fitness Function | ⬜ Blocked — needs turn logs |
+| 8 | Joint Component Modeling | ⬜ Blocked — needs turn logs |
 
 ### Files created or modified per step
 
