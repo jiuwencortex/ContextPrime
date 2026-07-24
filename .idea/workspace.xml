@@ -5,7 +5,196 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="525e7547-7e57-4de0-a4ef-216eb3f02bbc" name="Changes" comment="Working on Thalamus">
+      <change afterPath="$PROJECT_DIR$/thalamus/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/runners/run_01_score.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/runners/run_02_oracle.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/runners/run_03_classifier.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/runners/run_04_select.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/runners/run_all.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_clusters/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/tests/run_tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus/tests/test_skill_discovery.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/_config.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_01_baselines.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_02_ablation.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_03_cross_path.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_04_bandit.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_05_set_quality.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_06_meta_learning.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/runners/run_all_experiments.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/cli_args_parser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thalamus_research/tests/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/thalamus.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/IMPLEMENTATION_PLAN.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/docs/IMPLEMENTATION_PLAN.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/SkillRouter.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/docs/SkillRouter.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/THALAMUS.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/docs/thalamus.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/THALAMUS_SLIDES.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/docs/thalamus_slides.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/future-roadmap.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/docs/future-roadmap.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/jiuwenswarm-integration-plan.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/docs/jiuwenswarm-integration-plan.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/research-plan.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/docs/research-plan.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/thalamus_paper.md" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/docs/thalamus_paper.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/runners/run_01_score.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/runners/run_02_oracle.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/runners/run_03_classifier.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/runners/run_04_select.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/runners/run_all.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/run_tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_skill_discovery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/_shared/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/_shared/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/_shared/classifier_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/_shared/classifier_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/_shared/context_orderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/_shared/context_orderer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/_shared/outcome_scorer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/_shared/outcome_scorer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/_shared/query_clusterer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/_shared/query_clusterer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/_shared/turn_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/_shared/turn_logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/classifier/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/classifier/classifier_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/classifier/classifier_evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/classifier/cmd_train_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/classifier/cmd_train_classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/classifier/component_classifier_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/classifier/component_classifier_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/classifier/log_splitter.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/classifier/log_splitter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/classifier/model_registry.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/classifier/model_registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/cli_args_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/cli_args_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/cmd_list_versions.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/cmd_list_versions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/cmd_status.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/cmd_status.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/cmd_tune.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/cmd_tune.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/classifier/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/cmd_build.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/cmd_build.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/component_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/component_info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step01_load_components.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step01_load_components.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step02_collect_texts.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step02_collect_texts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step03_fit_clusters.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step03_fit_clusters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step04_compute_cluster_centroids.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step04_compute_cluster_centroids.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step05_assign_clusters.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step05_assign_clusters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step06_run_evolutionary_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step06_run_evolutionary_search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/config_builder_step07_serialize_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/config_builder_step07_serialize_output.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/evolution/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/evolution/context_genome.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/evolution/context_genome.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/evolution/cosine.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/evolution/cosine.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/evolution/evolutionary_search_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/evolution/evolutionary_search_runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/evolution/fitness_computer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/evolution/fitness_computer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/evolutionary/pareto_validator.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/pareto_validator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/hyperparameters_tuner/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/evolutionary/evolution/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/hyperparameters_tuner/classifier_hyperparameter_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/hyperparameters_tuner/classifier_hyperparameter_search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/hyperparameters_tuner/cluster_count_tuner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/hyperparameters_tuner/cluster_count_tuner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/hyperparameters_tuner/clusters_lambda_tuner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/hyperparameters_tuner/clusters_lambda_tuner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/hyperparameters_tuner/cmd_tune_hyperparameters.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/hyperparameters_tuner/cmd_tune_hyperparameters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/hyperparameters_tuner/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/cmd_check_rebuild.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/cmd_check_rebuild.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/cmd_staleness_status.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/cmd_staleness_status.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/distribution_monitor.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/distribution_monitor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/rebuild_recommendation.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/rebuild_recommendation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/rebuild_recommendation_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/rebuild_recommendation_checker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/staleness_checker.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/staleness_checker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/oracle/rebuild_recommender/staleness_status.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/staleness_status.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/cli_args_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/cli_args_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/cli_builders.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/cli_builders.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/enrichment/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/enrichment/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/enrichment/score_enricher.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/enrichment/score_enricher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/memory/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/memory/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/memory/composer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/memory/composer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/memory/scanner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/memory/scanner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/memory/template.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/memory/template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/all_items_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/all_items_evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/changed_items_determiner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/changed_items_determiner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/dry_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/dry_run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/fingerprint.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/fingerprint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/_tokenizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/_tokenizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metric_bag_of_words.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metric_bag_of_words.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metric_bert_score.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metric_bert_score.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metric_bigram_f1.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metric_bigram_f1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metric_length_ratio.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metric_length_ratio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metric_llm_judge.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metric_llm_judge.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metric_token_f1.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metric_token_f1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/metrics/metrics_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/metrics/metrics_list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/queries_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/queries_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/single_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/single_evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/state.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/state.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/state_saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/state_saver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/shared/summary_printer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/shared/summary_printer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/skills/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/skills/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/skills/composer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/skills/composer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/skills/scanner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/skills/scanner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/skills/template.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/skills/template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/tools/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/tools/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/tools/composer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/tools/composer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/tools/scanner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/tools/scanner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/tools/template.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/tools/template.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/scoring/tools/tool_definitions_example.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/scoring/tools/tool_definitions_example.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_classifier/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/oracle/rebuild_recommender/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_classifier/classifier_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_classifier/classifier_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_classifier/cmd_classify.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_classifier/cmd_classify.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_clusters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_classifier/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_clusters/budget_estimator.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_clusters/budget_estimator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_clusters/cluster_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_clusters/cluster_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/by_clusters/cmd_lookup.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/by_clusters/cmd_lookup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/cli_args_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/cli_args_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/selection/context_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/selection/context_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus/skills/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus/src/thalamus/skills/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/ablations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/ablations/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/ablations/cmd_ablation.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/ablations/cmd_ablation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/ablations/no_bookend_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/ablations/no_bookend_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/ablations/path_b_only_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/ablations/path_b_only_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/ablations/single_budget_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/ablations/single_budget_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/ablations/topk_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/ablations/topk_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/bandit/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/bandit/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/bandit/cmd_bandit.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/bandit/cmd_bandit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/bandit/convergence.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/bandit/convergence.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/bandit/exploration_rate.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/bandit/exploration_rate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/all_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/all_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/bm25_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/bm25_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/cmd_baseline_lookup.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/cmd_baseline_lookup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/component_catalog.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/component_catalog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/dense_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/dense_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/protocol.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/protocol.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/random_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/random_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/baselines/tfidf_selector.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/baselines/tfidf_selector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/cli_args_parser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/cross_path/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/cross_path/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/cross_path/cmd_cross_path.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/cross_path/cmd_cross_path.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/cross_path/co_inclusion_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/cross_path/co_inclusion_extractor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/cross_path/fitness_augmentor.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/cross_path/fitness_augmentor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/evaluation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/evaluation/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/evaluation/benchmark_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/evaluation/benchmark_runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/evaluation/cmd_eval.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/evaluation/cmd_eval.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/evaluation/overlap_stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/evaluation/overlap_stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/evaluation/report.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/evaluation/report.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/evaluation/result_schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/evaluation/result_schema.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/meta_learning/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/meta_learning/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/meta_learning/cmd_meta_learning.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/meta_learning/cmd_meta_learning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/meta_learning/component_fingerprint.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/meta_learning/component_fingerprint.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/meta_learning/knowledge_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/meta_learning/knowledge_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/meta_learning/transfer_initializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/meta_learning/transfer_initializer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/set_quality/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/set_quality/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/set_quality/cmd_set_quality.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/set_quality/cmd_set_quality.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/set_quality/fitness_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/set_quality/fitness_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/set_quality/interaction_features.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/set_quality/interaction_features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/set_quality/outcome_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/set_quality/outcome_dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thalamus_research/set_quality/set_quality_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/thalamus_research/src/thalamus_research/set_quality/set_quality_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,90 +207,97 @@
     </persistenceIdMap>
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="122" />
+    <option name="cachedIndexableFilesCount" value="174" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "michaelatamuk"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;michaelatamuk&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:jiuwencortex/Thalamus.git",
-    "accountId": "e0b58b04-487c-464b-8662-352ae87dfb27"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:jiuwencortex/Thalamus.git&quot;,
+    &quot;accountId&quot;: &quot;e0b58b04-487c-464b-8662-352ae87dfb27&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0000000003593825" />
-      <entry key="MS500" value="1.0219770715732102" />
-      <entry key="S2" value="2.419279176823231" />
-      <entry key="S5" value="5.1197081494589485" />
-      <entry key="S10" value="7.044036624423274" />
-      <entry key="S30" value="8.868296584302247" />
-      <entry key="S60" value="9.413389846063344" />
-      <entry key="M2" value="9.701299228804025" />
-      <entry key="M5" value="9.879197352318254" />
-      <entry key="M10" value="9.939375962459795" />
-      <entry key="M15" value="9.959534309353806" />
-      <entry key="M30" value="9.979742278295369" />
-      <entry key="H1" value="9.989864911868448" />
-      <entry key="H2" value="9.994930898090193" />
-      <entry key="H4" value="9.997465059455987" />
-      <entry key="D1" value="9.999577455788856" />
-      <entry key="W1" value="9.999939635215727" />
+      <entry key="MS100" value="1.2363211450946326E-24" />
+      <entry key="MS500" value="4.797496802370856E-5" />
+      <entry key="S2" value="0.3051691817282368" />
+      <entry key="S5" value="2.0771594410333156" />
+      <entry key="S10" value="5.7336938109355025" />
+      <entry key="S30" value="20.68509110812283" />
+      <entry key="S60" value="36.53471594068132" />
+      <entry key="M2" value="56.10697011390595" />
+      <entry key="M5" value="79.67008866988112" />
+      <entry key="M10" value="97.54587962579615" />
+      <entry key="M15" value="113.64739819397164" />
+      <entry key="M30" value="150.3778965799907" />
+      <entry key="H1" value="185.8567221274759" />
+      <entry key="H2" value="211.00259927963288" />
+      <entry key="H4" value="226.03416601445727" />
+      <entry key="D1" value="240.02746253639955" />
+      <entry key="W1" value="242.57165662304072" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="0.0" />
-      <entry key="S5" value="0.0" />
-      <entry key="S10" value="0.0" />
-      <entry key="S30" value="0.0" />
-      <entry key="S60" value="0.0" />
-      <entry key="M2" value="0.0" />
-      <entry key="M5" value="0.0" />
-      <entry key="M10" value="0.0" />
-      <entry key="M15" value="0.0" />
-      <entry key="M30" value="0.0" />
-      <entry key="H1" value="0.0" />
-      <entry key="H2" value="0.0" />
-      <entry key="H4" value="0.0" />
-      <entry key="D1" value="0.0" />
-      <entry key="W1" value="0.0" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000000000001514" />
+      <entry key="S2" value="1.001142890870507" />
+      <entry key="S5" value="1.158667898414893" />
+      <entry key="S10" value="1.9899770306440083" />
+      <entry key="S30" value="5.211031444274497" />
+      <entry key="S60" value="7.872721357254324" />
+      <entry key="M2" value="10.659528785035668" />
+      <entry key="M5" value="13.758232162788506" />
+      <entry key="M10" value="15.904188060498605" />
+      <entry key="M15" value="17.674231323100035" />
+      <entry key="M30" value="21.540180179327137" />
+      <entry key="H1" value="25.19187920151165" />
+      <entry key="H2" value="27.756013259798202" />
+      <entry key="H4" value="29.282201135879415" />
+      <entry key="D1" value="30.699361536421033" />
+      <entry key="W1" value="30.95668619411264" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="5.526093761731566E-8" />
-      <entry key="MS500" value="0.05190016419397833" />
-      <entry key="S2" value="1.807507587963571" />
-      <entry key="S5" value="4.796806140533287" />
-      <entry key="S10" value="6.864740976304682" />
-      <entry key="S30" value="8.803910904162354" />
-      <entry key="S60" value="9.38057054712442" />
-      <entry key="M2" value="9.684728933016165" />
-      <entry key="M5" value="9.872530145912144" />
-      <entry key="M10" value="9.93603579942961" />
-      <entry key="M15" value="9.957306072890367" />
-      <entry key="M30" value="9.97862742866343" />
-      <entry key="H1" value="9.9893073040437" />
-      <entry key="H2" value="9.994652048405761" />
-      <entry key="H4" value="9.997325623168273" />
-      <entry key="D1" value="9.999554214817705" />
-      <entry key="W1" value="9.999936315038052" />
+      <entry key="MS100" value="0.00961831572925716" />
+      <entry key="MS500" value="0.3950677344891989" />
+      <entry key="S2" value="1.0976689619600795" />
+      <entry key="S5" value="3.128779950012157" />
+      <entry key="S10" value="7.612879584830826" />
+      <entry key="S30" value="25.749820846135066" />
+      <entry key="S60" value="44.27869646429631" />
+      <entry key="M2" value="66.67205319628563" />
+      <entry key="M5" value="93.37740210650776" />
+      <entry key="M10" value="113.41971387846755" />
+      <entry key="M15" value="131.2983912006887" />
+      <entry key="M30" value="171.90300463031605" />
+      <entry key="H1" value="211.03939373972796" />
+      <entry key="H2" value="238.75341623230705" />
+      <entry key="H4" value="255.31359191094182" />
+      <entry key="D1" value="270.72633405958373" />
+      <entry key="W1" value="273.5282721017225" />
     </decayedShown>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4,
-  "fromUser": false
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3GtYaOJoJgLxnAP2dNxKY44HFpF" />
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
@@ -122,14 +318,25 @@
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/mishka/PycharmProjects/openjiuwencortex/Thalamus",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "http.proxy",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/thalamus_research/docs" />
+      <recent name="$PROJECT_DIR$/docs" />
+      <recent name="$PROJECT_DIR$/thalamus_research/src" />
+      <recent name="$PROJECT_DIR$/thalamus/docs" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -146,6 +353,8 @@
       <option name="presentableId" value="Default" />
       <updated>1784792394405</updated>
       <workItem from="1784792395414" duration="1128000" />
+      <workItem from="1784910518479" duration="208000" />
+      <workItem from="1784910885451" duration="2445000" />
     </task>
     <task id="LOCAL-00001" summary="Working on Thalamus">
       <option name="closed" value="true" />

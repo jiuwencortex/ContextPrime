@@ -1,11 +1,6 @@
 [build-system]
-# setuptools is used here (not hatchling) because pyproject.toml sits inside
-# thalamus_research/, which is itself the Python package.  setuptools'
-# package-dir lets us point one level up to locate the source.
-# If you later add a src/ layout (thalamus_research/thalamus_research/),
-# switch back to hatchling and remove package-dir.
-requires = ["setuptools>=61"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 # ── Research package ─────────────────────────────────────────────────────────
 # Never imported by production code.  Adds the thalamus-research CLI and
@@ -35,11 +30,5 @@ thalamus-research = "thalamus_research.cli:main"
 thalamus = { workspace = true }
 
 # ── Package discovery ─────────────────────────────────────────────────────────
-# package-dir tells setuptools that Python packages live one level above this
-# pyproject.toml (i.e. in Thalamus/, not in Thalamus/thalamus_research/).
-[tool.setuptools]
-package-dir = {"" = ".."}
-
-[tool.setuptools.packages.find]
-where   = [".."]
-include = ["thalamus_research", "thalamus_research.*"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/thalamus_research"]

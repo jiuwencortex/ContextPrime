@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ── Production package ───────────────────────────────────────────────────────
+[project]
+name = "thalamus"
+version = "0.1.0"
+description = "Adaptive context selection for AI agents — offline scoring, genetic algorithm oracle, and sub-10ms runtime selection."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+# Sentence-transformer clustering backend (--embedder sentence)
+sentence  = ["sentence-transformers>=2.2"]
+# BERTScore evaluation metric (--metrics bert_score)
+bertscore = ["bert-score>=0.3"]
+all       = ["thalamus[sentence,bertscore]"]
+
+[project.scripts]
+# Phase 1 — score each component against a representative query sample
+thalamus-score  = "thalamus.scoring.cli:main"
+# Phase 2 — build / retrain / tune the oracle from scoring matrices
+thalamus-oracle = "thalamus.oracle.cli:main"
+# Runtime — sub-10ms query → context selection
+thalamus-select = "thalamus.selection.cli:main"
+
+# ── Package discovery ─────────────────────────────────────────────────────────
+[tool.hatch.build.targets.wheel]
+packages = ["src/thalamus"]
