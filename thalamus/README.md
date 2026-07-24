@@ -111,14 +111,14 @@ thalamus-select lookup            --oracle-dir ... --query "..." --budget auto
 
 ```python
 # Select context for a query at runtime (Path A — cluster lookup)
-from selection import ClusterSelector
+from thalamus.selection import ClusterSelector
 
 selector = ClusterSelector.load("/path/to/oracle")
 config = selector.select("Set up a CI pipeline", budget="auto", ordering="bookend")
 # config = {"skills": [...], "memory": [...], "tools": [...], "context_tokens": 2140, ...}
 
 # Log an agent turn for classifier training (Path B)
-from _shared import TurnLogger
+from thalamus._shared import TurnLogger
 
 logger = TurnLogger("/path/to/oracle/online_logs")
 turn_id = logger.log_turn(
