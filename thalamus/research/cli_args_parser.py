@@ -10,6 +10,8 @@ Research subcommands
   ablation          Run THALAMUS ablation study (TopK / NoBookend / SingleBudget / PathBOnly) (R2)
   cross-path        Analyze classifier co-inclusion signal for GA fitness transfer (R3a)
   bandit            Estimate optimal exploration rate ε* and measure convergence (R3b)
+  set-quality       Train / evaluate set-level quality model from turn logs (R4)
+  meta-learning     Extract KB from oracle or warm-start new deployment (R5)
 """
 from __future__ import annotations
 
@@ -26,7 +28,9 @@ def make_parser() -> argparse.ArgumentParser:
             "  eval            — benchmark selectors on a query set, write results JSON (Phase R1)\n"
             "  ablation        — run ablation study: TopK/NoBookend/SingleBudget/PathBOnly (Phase R2)\n"
             "  cross-path      — analyze classifier co-inclusion for GA transfer (Phase R3a)\n"
-            "  bandit          — estimate optimal exploration rate ε* (Phase R3b)"
+            "  bandit          — estimate optimal exploration rate ε* (Phase R3b)\n"
+            "  set-quality     — train/evaluate set-level quality model (Phase R4)\n"
+            "  meta-learning   — extract KB or warm-start new deployment (Phase R5)"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -247,6 +251,63 @@ def make_parser() -> argparse.ArgumentParser:
     bandit.add_argument(
         "--out", default=None,
         help="Write analysis JSON to this path (default: print to stdout)",
+    )
+
+    # ── set-quality (Phase R4) ────────────────────────────────────────────────
+    sq = sub.add_parser(
+        "set-quality",
+        help="Train or evaluate the set-level quality model from turn logs (Phase R4)",
+    )
+    sq.add_argument(
+        "--oracle-dir", required=True, type=Path,
+        help="Directory containing context_configs.pkl and (optionally) turn logs",
+    )
+    sq.add_argument(
+        "--turn-log-dir", default=None, type=Path,
+        help="Directory containing turns_YYYY-WNN.jsonl files (default: oracle-dir)",
+    )
+    sq.add_argument(
+        "--model-dir", default=None, type=Path,
+        help="Directory for model.pkl + meta.json (default: <oracle-dir>/set_quality_model)",
+    )
+    sq.add_argument(
+        "--subcommand", choices=["train", "evaluate"],
+        default="train",
+        help="train: fit model on turn logs (default).  evaluate: report RMSE/R² on logs.",
+    )
+    sq.add_argument(
+        "--exclude-explored", action="store_true",
+        help="Exclude off-policy (explored) turns from training/evaluation",
+    )
+    sq.add_argument(
+        "--out", default=None,
+        help="Write training/evaluation report JSON to this path",
+    )
+
+    # ── meta-learning (Phase R5) ──────────────────────────────────────────────
+    ml = sub.add_parser(
+        "meta-learning",
+        help="Extract KB stats from oracle or warm-start new deployment (Phase R5)",
+    )
+    ml.add_argument(
+        "--oracle-dir", required=True, type=Path,
+        help="Oracle directory (source for extract; target for transfer)",
+    )
+    ml.add_argument(
+        "--kb-path", required=True, type=Path,
+        help="Path to the shared knowledge_base.json file",
+    )
+    ml.add_argument(
+        "--subcommand", choices=["extract", "transfer"],
+        default="extract",
+        help=(
+            "extract: ingest component stats from oracle into KB (default).  "
+            "transfer: warm-start oracle from KB (writes transfer_priors.json)."
+        ),
+    )
+    ml.add_argument(
+        "--out", default=None,
+        help="Write operation report JSON to this path",
     )
 
     return p

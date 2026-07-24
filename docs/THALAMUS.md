@@ -408,7 +408,8 @@ graph TD
         RA[research/ablations\nTopKSelector · NoBookendSelector\nSingleBudgetSelector · PathBOnlySelector]
         RCP[research/cross_path\nCoInclusionExtractor · FitnessAugmentor]
         RB[research/bandit\nExplorationRateEstimator · ConvergenceAnalyzer]
-        RFuture[research/set_quality · meta_learning\n— planned phases R4–R5 —]
+        RSQ[research/set_quality\nOutcomeDataset · SetQualityModel · SetQualityFitness]
+        RML[research/meta_learning\nfingerprint_catalog · KnowledgeBase · TransferInitializer]
     end
 
     CS -->|scoring_matrix_*.json| OB
@@ -419,6 +420,8 @@ graph TD
     RS -.->|reads scoring matrices| CS
     RE -.->|wraps selectors for benchmarking| CTX
     RS -.->|compared against| CTX
+    RSQ -.->|reads turn logs + oracle| OB
+    RML -.->|reads scoring matrices + oracle| CS
 ```
 
 **`component_scoring/`** handles Phases 1 and 2. It scans component sources, runs LLM evaluation, and writes scoring matrices. It also provides the `enrich` build type that blends real turn data into existing matrices. It has no dependency on `oracle_builder` or `context_selectors`.
@@ -436,9 +439,10 @@ graph TD
 - **`ablations/`** — four ablation selectors for the R2 isolation study: `TopKSelector` (no GA; greedy quality × relevance), `NoBookendSelector` (GA without bookend ordering), `SingleBudgetSelector` (GA without budget adaptation), `PathBOnlySelector` (Path B with no fallback to Path A). All implement `SelectorProtocol` (Phase R2).
 - **`cross_path/`** — `CoInclusionExtractor` derives pairwise co-inclusion scores from the classifier's weight matrix; `FitnessAugmentor` annotates `context_configs.json` with augmented fitness scores (`fitness_aug = base + λ × co_inclusion(S)`) for cross-path transfer experiments (Phase R3a).
 - **`bandit/`** — `ExplorationRateEstimator` derives the minimum exploration rate ε\* from Path A's action distribution; `ConvergenceAnalyzer` measures Path B → Path A selection agreement over turn history (Phase R3b).
-- **`set_quality/`**, **`meta_learning/`** — placeholders for planned Phases R4–R5.
+- **`set_quality/`** — `OutcomeDataset`, `SetQualityModel`, `SetQualityFitness`: loads turn logs into cluster-labelled records, trains a `GradientBoostingRegressor` over 14-dim interaction features, and exposes a GA-compatible fitness callable (Phase R4).
+- **`meta_learning/`** — `fingerprint_catalog`, `KnowledgeBase`, `TransferInitializer`: SHA-256 component fingerprinting, flat JSON cross-deployment knowledge base, and warm-start transfer via `transfer_priors.json` (Phase R5).
 
-The `thalamus-research` CLI entry point exposes five subcommands: `baseline-lookup`, `eval`, `ablation`, `cross-path`, `bandit`. All research operations are cleanly separated from the production `thalamus-select` entry point.
+The `thalamus-research` CLI entry point exposes seven subcommands: `baseline-lookup`, `eval`, `ablation`, `cross-path`, `bandit`, `set-quality`, `meta-learning`. All research operations are cleanly separated from the production `thalamus-select` entry point.
 
 ### 9.2 Offline Lifecycle
 

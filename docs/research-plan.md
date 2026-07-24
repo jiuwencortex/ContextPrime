@@ -385,6 +385,33 @@ skill + multiple augmentation skills).
 
 **Publication target:** Full-length paper at ACL / EMNLP (combining R1–R4).
 
+**Implementation status: ✓ COMPLETE**
+
+The following artifacts have been implemented under `thalamus/research/set_quality/`:
+
+| Artifact | Location | Notes |
+|---|---|---|
+| `OutcomeDataset` / `OutcomeRecord` | `set_quality/outcome_dataset.py` | Loads turn logs → cluster-labelled records with component membership |
+| `InteractionFeatures` | `set_quality/interaction_features.py` | 14-dim feature vector: mean_score, std_score, min/max score, component type counts, co-inclusion stats, cluster_id |
+| `SetQualityModel` | `set_quality/set_quality_model.py` | GradientBoostingRegressor; `train()`, `save()`, `load()`, `score_set()` |
+| `SetQualityFitness` | `set_quality/fitness_function.py` | GA-compatible callable; wraps `SetQualityModel.score_set()` as a drop-in fitness replacement |
+| CLI handler | `set_quality/cmd_set_quality.py` | `train` + `evaluate` subcommands |
+
+CLI:
+```
+# Train the set-level quality model from oracle turn logs
+thalamus-research set-quality --oracle-dir /oracle --subcommand train
+
+# Evaluate model on held-out turn logs
+thalamus-research set-quality --oracle-dir /oracle --subcommand evaluate
+```
+
+**Remaining before R4 results are reportable:**
+1. Accumulate ~1000 logged turns in jiuwenswarm to provide sufficient training data.
+2. Run `thalamus-research set-quality --subcommand train` to fit `SetQualityModel`.
+3. Wire `SetQualityFitness` into `oracle_builder evolve --fitness-model xgb`.
+4. Run ablation comparing `marginal` vs `xgb` fitness on jiuwenswarm task suite.
+
 ---
 
 ### Phase R5 — Multi-Deployment Meta-Learning
@@ -412,6 +439,32 @@ formalizes it as few-shot transfer learning.
 
 **Publication target:** Workshop paper at NeurIPS (Transfer Learning / Multi-task
 Learning track). Prerequisite: at least 3 distinct jiuwenswarm deployments exist.
+
+**Implementation status: ✓ COMPLETE**
+
+The following artifacts have been implemented under `thalamus/research/meta_learning/`:
+
+| Artifact | Location | Notes |
+|---|---|---|
+| `fingerprint_component()` / `fingerprint_catalog()` | `meta_learning/component_fingerprint.py` | SHA-256(name + description + body_text); fingerprints entire component catalog |
+| `KnowledgeBase` | `meta_learning/knowledge_base.py` | Flat JSON store: fingerprint → `{mean_outcome_when_included, n_deployments, ...}`; merge and update operations |
+| `TransferInitializer` / `TransferResult` | `meta_learning/transfer_initializer.py` | `transfer()` matches new deployment components against KB; writes `transfer_priors.json` for warm-start |
+| CLI handler | `meta_learning/cmd_meta_learning.py` | `extract` + `transfer` subcommands |
+
+CLI:
+```
+# Extract component fingerprints and update the shared knowledge base
+thalamus-research meta-learning --oracle-dir /oracle --kb-path /shared/kb.json --subcommand extract
+
+# Warm-start a new deployment from the shared knowledge base
+thalamus-research meta-learning --oracle-dir /oracle --kb-path /shared/kb.json --subcommand transfer
+```
+
+**Remaining before R5 results are reportable:**
+1. Deploy at least 3 distinct jiuwenswarm instances to accumulate cross-deployment KB entries.
+2. Run `thalamus-research meta-learning --subcommand extract` on each to populate the shared KB.
+3. Measure cold-start quality (turn 0) with vs without `transfer_priors.json` warm-start.
+4. Report sample complexity reduction from meta warm-start.
 
 ---
 

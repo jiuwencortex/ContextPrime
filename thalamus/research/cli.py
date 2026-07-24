@@ -41,6 +41,12 @@ def main() -> None:
     elif args.command == "bandit":
         from .bandit.cmd_bandit import run
         run(args)
+    elif args.command == "set-quality":
+        from .set_quality.cmd_set_quality import run
+        run(args)
+    elif args.command == "meta-learning":
+        from .meta_learning.cmd_meta_learning import run
+        run(args)
 
 
 if __name__ == "__main__":

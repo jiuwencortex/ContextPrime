@@ -2029,35 +2029,69 @@ The `research/` subpackage is THALAMUS's scientific layer. It is never loaded at
 
 ```
 thalamus/research/
-├── baselines/        Five alternative selectors (SelectorProtocol-compatible)
+├── baselines/        R1 ✓ — Five alternative selectors (SelectorProtocol-compatible)
 │   ├── AllSelector         — include everything (quality upper bound)
 │   ├── RandomSelector      — seeded random sample (chance baseline)
 │   ├── TFIDFSelector       — TF-IDF cosine similarity, no training
 │   ├── BM25Selector        — Okapi BM25, no external dependencies
 │   └── DenseSelector       — sentence-transformer (optional install)
-├── evaluation/       Benchmark harness
+├── evaluation/       R1 ✓ — Benchmark harness
 │   ├── BenchmarkRunner     — runs selector suite, records latency + overlap
 │   ├── EvalRun             — typed result schema with quality placeholder
 │   ├── OverlapStats        — Jaccard / precision / recall vs reference
 │   └── report              — ASCII comparison table
-├── cross_path/       R3a — classifier weights → GA fitness   [planned]
-├── bandit/           R3b — off-policy exploration rate bound  [planned]
-├── set_quality/      R4  — XGB/joint set-level quality model  [planned]
-└── meta_learning/    R5  — cross-deployment warm-start        [planned]
+├── ablations/        R2 ✓ — THALAMUS component isolation selectors
+│   ├── TopKSelector        — no GA: greedy mean_score × cosine ranking (tests C1)
+│   ├── NoBookendSelector   — GA without bookend ordering (tests C5)
+│   ├── SingleBudgetSelector — GA with fixed budget, no adaptation (tests C6)
+│   └── PathBOnlySelector   — Path B only, no Path A fallback (tests C3)
+├── cross_path/       R3a ✓ — Classifier → GA knowledge transfer
+│   ├── CoInclusionExtractor — pairwise cosine similarity of weight vectors W[i]·W[j]
+│   └── FitnessAugmentor    — fitness_aug = base + λ × co_inclusion(S)
+├── bandit/           R3b ✓ — Contextual bandit formalization
+│   ├── ExplorationRateEstimator — derive ε* from Path A action distribution
+│   └── ConvergenceAnalyzer — measure Path B → Path A agreement over turn history
+├── set_quality/      R4 ✓ — GBR over 14-dim interaction features
+│   ├── OutcomeDataset      — load turn logs → cluster-labelled records
+│   ├── SetQualityModel     — GradientBoostingRegressor (train/save/load/score_set)
+│   └── SetQualityFitness   — GA-compatible callable (score(component_names, cluster_id))
+└── meta_learning/    R5 ✓ — cross-deployment warm-start
+    ├── fingerprint_catalog — SHA-256(name+description+body_text) per component
+    ├── KnowledgeBase       — flat JSON: fingerprint → {mean_outcome_when_included, n_deployments, ...}
+    └── TransferInitializer — transfer() → TransferResult (writes transfer_priors.json)
 ```
 
-**CLI:**
+**CLI — all seven subcommands:**
 
 ```
+# R1: baseline comparison
 thalamus-research baseline-lookup --oracle-dir /oracle \
-    --query "Set up a CI pipeline" --method tfidf bm25 thalamus
+    --query "Set up a CI pipeline" --method tfidf bm25
 
+# R1: full benchmark run
 thalamus-research eval --oracle-dir /oracle \
-    --query-file tasks.jsonl --reference thalamus \
-    --method all random tfidf bm25 --out results/run_01.json
+    --query-file tasks.jsonl --reference thalamus --out results/run_01.json
+
+# R2: ablation study (TopK / NoBookend / SingleBudget / PathBOnly vs THALAMUS)
+thalamus-research ablation --oracle-dir /oracle \
+    --query-file tasks.jsonl --out results/ablation.json
+
+# R3a: co-inclusion analysis + augmented fitness
+thalamus-research cross-path --oracle-dir /oracle --top-pairs 20
+thalamus-research cross-path --oracle-dir /oracle --augment-configs --out augmented.json
+
+# R3b: derive ε* and measure Path B convergence
+thalamus-research bandit --oracle-dir /oracle --subcommand estimate-rate
+thalamus-research bandit --oracle-dir /oracle --subcommand convergence --turn-log-dir /logs
+
+# R4: set-level quality model
+thalamus-research set-quality --oracle-dir /oracle --subcommand train
+
+# R5: cross-deployment meta-learning
+thalamus-research meta-learning --oracle-dir /oracle --kb-path /shared/kb.json --subcommand transfer
 ```
 
-**Workflow:** The evaluation harness compares THALAMUS against baselines on a fixed task suite, measures latency and component overlap, and writes a structured `EvalRun` JSON file. Quality scores (`quality=null` in the JSON) are filled in by a separate jiuwenswarm pass that runs each context config through the real agent. The resulting table supports all six research contributions: C1 (GA beats top-k), C2 (cold-start sample complexity), C3 (dual-path beats either alone), C4 (off-policy exploration prevents bias), C5 (bookend ordering), C6 (budget adaptation).
+**Workflow:** The evaluation harness compares THALAMUS against baselines (R1) and ablation variants (R2) on a fixed task suite, measures latency and component overlap, and writes structured `EvalRun` JSON files. Quality scores (`quality=null`) are filled in by a separate jiuwenswarm pass. The cross-path tools (R3a) extract co-inclusion signal from the classifier and annotate `context_configs.json` with augmented fitness scores. The bandit tools (R3b) derive the minimum exploration rate ε\* and track Path B convergence over turn history. The resulting data supports all six research contributions (C1–C6).
 
 **Separation principle:** `thalamus-research` is a separate CLI entry point from `thalamus-select`. Research imports live entirely under `research/`. The four production packages (`component_scoring/`, `oracle_builder/`, `context_selectors/`, `shared/`) have no dependency on `research/`.
 

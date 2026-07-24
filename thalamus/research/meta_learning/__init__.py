@@ -1,17 +1,47 @@
-"""Phase R5 — Cross-deployment meta-learning.
+"""Phase R5 — Cross-Deployment Meta-Learning.
 
 Research goal: reduce cold-start time for new jiuwenswarm deployments by
-transferring knowledge from existing ones that share overlapping components.
+transferring component quality priors from existing deployments that share
+overlapping components (identified by SHA-256 content fingerprints).
 
-Planned implementation
-----------------------
-- Component identity: SHA-256(name + description + body_text) fingerprint
-- Knowledge base: flat JSON store — fingerprint → {mean_score, co_inclusion_stats,
-  classifier_weight_stats} aggregated across deployments
-- Warm-start: new deployment loads KB entries matching its component fingerprints
-  to initialize scoring matrices and classifier prior
-- CLI: ``thalamus-oracle meta-init --knowledge-base /shared/kb --oracle-dir /new``
+**Key claim (C8)**
 
-Prerequisite: R4 complete AND at least 3 distinct jiuwenswarm deployments exist.
-Only relevant at platform scale (multi-tenant, shared component libraries).
+    Warm-starting a new deployment's GA fitness scores from a cross-deployment
+    knowledge base (KB) reaches the same outcome quality as a cold-start
+    deployment in ≤ 50% of the turns, provided ≥ 3 source deployments and
+    ≥ 30% component overlap.
+
+**Modules**
+
+- :func:`fingerprint_component`  — SHA-256(name + description + body_text)
+- :func:`fingerprint_catalog`    — fingerprint all components in an oracle dir
+- :class:`KnowledgeBase`         — persistent JSON store: fingerprint → quality stats
+- :class:`TransferInitializer`   — match new deployment to KB; write transfer_priors.json
+
+CLI::
+
+    # Extract stats from a completed deployment into the shared KB
+    thalamus-research meta-learning \\
+        --oracle-dir /oracle/deployment_1 \\
+        --kb-path /shared/knowledge_base.json \\
+        --subcommand extract
+
+    # Warm-start a new deployment from the KB
+    thalamus-research meta-learning \\
+        --oracle-dir /oracle/new_deployment \\
+        --kb-path /shared/knowledge_base.json \\
+        --subcommand transfer
+
+Prerequisite: Phase R4 complete AND at least 3 distinct jiuwenswarm deployments.
 """
+from .component_fingerprint import fingerprint_component, fingerprint_catalog
+from .knowledge_base import KnowledgeBase
+from .transfer_initializer import TransferInitializer, TransferResult
+
+__all__ = [
+    "fingerprint_component",
+    "fingerprint_catalog",
+    "KnowledgeBase",
+    "TransferInitializer",
+    "TransferResult",
+]

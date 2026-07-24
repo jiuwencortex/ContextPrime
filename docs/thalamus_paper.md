@@ -548,8 +548,8 @@ Sample complexity results compare configurations across this maturity curve.
 | R2 | Which THALAMUS components drive improvement? | ✓ All query-time ablation selectors implemented (`research/ablations/`: `TopKSelector`, `NoBookendSelector`, `SingleBudgetSelector`, `PathBOnlySelector`); quality runs pending |
 | R3a | Does classifier-to-GA transfer improve Path A? | ✓ `CoInclusionExtractor` + `FitnessAugmentor` implemented (`research/cross_path/`); wiring into `oracle_builder evolve` pending |
 | R3b | What is the minimum exploration rate ε\* for Path B convergence? | ✓ `ExplorationRateEstimator` + `ConvergenceAnalyzer` implemented (`research/bandit/`); empirical ε sweep pending |
-| R4 | Does a learned set-level fitness outperform the hand-crafted formula? | Design complete; requires ~1000 turns of logged data |
-| R5 | Can cross-deployment warm-start reduce cold-start time? | Design complete; requires multi-deployment data |
+| R4 | Does a learned set-level fitness outperform the hand-crafted formula? | ✓ `OutcomeDataset`, `SetQualityModel` (GBR over 14-dim interaction features), `SetQualityFitness` (GA plug-in) implemented (`research/set_quality/`); empirical quality runs pending |
+| R5 | Can cross-deployment warm-start reduce cold-start time? | ✓ SHA-256 fingerprinting (`fingerprint_catalog`), `KnowledgeBase` (flat JSON KB), `TransferInitializer` (writes `transfer_priors.json`) implemented (`research/meta_learning/`); multi-deployment data pending |
 
 ---
 
@@ -567,7 +567,7 @@ Adaptive clustering or online cluster splitting would address this.
 **Linear fitness function.** The GA fitness formula is a weighted sum of individual component
 scores. It structurally cannot model interaction effects: two components that are jointly
 necessary but individually mediocre both receive low fitness values and are likely excluded.
-Phase R4 will replace this with a gradient-boosting set-level quality model.
+Phase R4 has implemented this replacement: `SetQualityModel` (GradientBoostingRegressor) and `SetQualityFitness` are available in `research/set_quality/`.
 
 **Independent classifiers.** The N separate binary classifiers cannot model joint necessity.
 If skill A and tool B are only useful together, neither classifier learns this. A multi-label
@@ -589,9 +589,12 @@ applying bookend ordering in deployments with unusual context structures.
 tools (`research/cross_path/`); wiring into `oracle_builder evolve --use-classifier-prior`
 remains pending. Phase R3b has implemented the ε* derivation and convergence measurement
 tools (`research/bandit/`); empirical sweep over exploration rates remains pending.
-Phase R4 will replace the linear fitness function with a gradient-boosting set-level quality
-model. Phase R5 will extend the system to multi-deployment warm-start via a shared component
-knowledge base.
+Phase R4 has implemented `SetQualityModel` (GradientBoostingRegressor over 14-dim interaction
+features) and `SetQualityFitness` (GA-compatible callable) in `research/set_quality/`;
+empirical validation of set-level fitness vs marginal scoring on the jiuwenswarm task suite
+remains pending. Phase R5 has implemented SHA-256 component fingerprinting, `KnowledgeBase`,
+and `TransferInitializer` in `research/meta_learning/`; empirical cold-start comparison with
+and without `transfer_priors.json` warm-start requires multi-deployment data.
 
 ---
 
@@ -684,8 +687,8 @@ thalamus/
     │                             SingleBudgetSelector, PathBOnlySelector
     ├── cross_path/         R3a ✓ CoInclusionExtractor, FitnessAugmentor
     ├── bandit/             R3b ✓ ExplorationRateEstimator, ConvergenceAnalyzer
-    ├── set_quality/        R4    planned
-    └── meta_learning/      R5    planned
+    ├── set_quality/        R4 ✓  OutcomeDataset, SetQualityModel, SetQualityFitness
+    └── meta_learning/      R5 ✓  fingerprint_catalog, KnowledgeBase, TransferInitializer
 ```
 
 ## Appendix B — CLI Reference
@@ -695,7 +698,7 @@ thalamus/
 thalamus-select lookup --oracle-dir /oracle --query "..." [--budget auto] [--ordering bookend]
 thalamus-select classify --oracle-dir /oracle --embedding-file emb.json
 
-# Research entry point (thalamus-research) — 5 subcommands
+# Research entry point (thalamus-research) — 7 subcommands
 thalamus-research baseline-lookup --oracle-dir /oracle --query "..." --method tfidf bm25
 
 thalamus-research eval --oracle-dir /oracle --query-file tasks.jsonl \
@@ -712,6 +715,12 @@ thalamus-research bandit --oracle-dir /oracle --subcommand estimate-rate \
     --n-min 10 --T-target 500
 thalamus-research bandit --oracle-dir /oracle --subcommand convergence \
     --turn-log-dir /logs --window-size 50
+
+thalamus-research set-quality --oracle-dir /oracle --subcommand train
+thalamus-research set-quality --oracle-dir /oracle --subcommand evaluate
+
+thalamus-research meta-learning --oracle-dir /oracle --kb-path /shared/kb.json --subcommand extract
+thalamus-research meta-learning --oracle-dir /oracle --kb-path /shared/kb.json --subcommand transfer
 ```
 
 ## Appendix C — Scoring Matrix Schema
