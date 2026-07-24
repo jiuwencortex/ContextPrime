@@ -23,7 +23,7 @@ Not implemented as query-time selectors (require build-time changes):
 
 Typical usage in ``BenchmarkRunner``::
 
-    from thalamus.context_selectors import ContextSelector
+    from thalamus.selection import ContextSelector
     from thalamus_research.ablations import (
         TopKSelector, NoBookendSelector, SingleBudgetSelector, PathBOnlySelector
     )

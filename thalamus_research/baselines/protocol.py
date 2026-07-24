@@ -15,9 +15,9 @@ class SelectorProtocol(Protocol):
 
     Usage::
 
-        from thalamus.baselines import SelectorProtocol
-        from thalamus.context_selectors import ContextSelector
-        from thalamus.baselines import TFIDFSelector
+        from thalamus_research.baselines import SelectorProtocol
+        from thalamus.selection import ContextSelector
+        from thalamus_research.baselines import TFIDFSelector
 
         def evaluate(selector: SelectorProtocol, query: str) -> dict | None:
             return selector.select(query)

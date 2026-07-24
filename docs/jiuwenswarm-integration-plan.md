@@ -99,7 +99,7 @@ Agent runs with focused, budget-aware context
 
 ### 4.1 Thalamus — `ContextSelector` facade (NEW, Thalamus repo)
 
-**File:** `thalamus/context_selectors/context_selector.py`
+**File:** `../thalamus/selection/context_selector.py`
 
 A thin facade that owns the Path B → Path A → None fallback and handles optional imports.
 Neither ClusterSelector nor ClassifierSelector implement this fallback themselves.
@@ -178,21 +178,21 @@ each message and writes results to session state for downstream rails to read.
 class ThalamusContextRail(DeepAgentRail):
     """Pre-selects skills, memory, and tools via Thalamus oracle before agent runs."""
 
-    priority = 50   # Must run before SkillUseRail (priority=100) and MemoryRail
+    priority = 50  # Must run before SkillUseRail (priority=100) and MemoryRail
 
     SESSION_KEY = "thalamus_context"
 
     def __init__(self, oracle_dir: str | Path, budget: str | None = None,
                  ordering: str = "bookend"):
         self._oracle_dir = Path(oracle_dir)
-        self._budget = budget   # None → auto
+        self._budget = budget  # None → auto
         self._ordering = ordering
         self._selector: ContextSelector | None = None
 
     def init(self, session):
         super().init(session)
         try:
-            from thalamus.context_selectors import ContextSelector
+            from thalamus.selection import ContextSelector
             self._selector = ContextSelector.load(self._oracle_dir)
             logger.info("Thalamus oracle loaded (path=%s)", self._selector.active_path)
         except Exception:
@@ -394,7 +394,7 @@ thalamus-score build \
 ## 8. Implementation Sequence
 
 ### Phase 1 — Thalamus repo (no jiuwenswarm/agent-core changes)
-1. Add `ContextSelector` facade (`thalamus/context_selectors/context_selector.py`)
+1. Add `ContextSelector` facade (`../thalamus/selection/context_selector.py`)
    - Path B → Path A → None fallback
    - Export from `__init__.py`
 

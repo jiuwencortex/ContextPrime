@@ -40,7 +40,7 @@ echo "  Oracle dir : $ORACLE_DIR"
 echo "  Model      : $MODEL"
 echo ""
 
-python -m thalamus.component_scoring build \
+python -m thalamus.scoring build \
   --type all \
   --skills-dir  "$SKILLS_DIR" \
   --project-dir "$PROJECT_DIR" \

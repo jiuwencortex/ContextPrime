@@ -69,7 +69,7 @@ class PathBOnlySelector:
         clusterer = None
 
         try:
-            from thalamus.context_selectors.by_classifier.classifier_selector import (
+            from thalamus.selection.by_classifier.classifier_selector import (
                 ClassifierSelector,
             )
             classifier_selector = ClassifierSelector.load(oracle_dir)
@@ -79,7 +79,7 @@ class PathBOnlySelector:
             logger.warning("PathBOnlySelector: classifier load failed", exc_info=True)
 
         try:
-            from thalamus.shared.query_clusterer import QueryClusterer
+            from thalamus._shared.query_clusterer import QueryClusterer
             pkl_path = oracle_dir / "context_configs.pkl"
             if pkl_path.exists():
                 clusterer = QueryClusterer.load(pkl_path)

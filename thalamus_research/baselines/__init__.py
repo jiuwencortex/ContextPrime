@@ -1,7 +1,7 @@
 """Baseline context selectors for research evaluation (Phase R1).
 
 All baselines implement :class:`SelectorProtocol` and can be used
-interchangeably with :class:`~thalamus.context_selectors.ContextSelector`
+interchangeably with :class:`~thalamus.selection.ContextSelector`
 in evaluation harnesses or A/B tests.
 
 Baselines
@@ -15,7 +15,7 @@ Baselines
 
 Usage::
 
-    from thalamus.baselines import TFIDFSelector, BM25Selector
+    from thalamus_research.baselines import TFIDFSelector, BM25Selector
 
     tfidf = TFIDFSelector.load("/oracle")
     bm25  = BM25Selector.load("/oracle")
@@ -25,8 +25,8 @@ Usage::
 
 Evaluation harness::
 
-    from thalamus.context_selectors import ContextSelector
-    from thalamus.baselines import TFIDFSelector, BM25Selector, SelectorProtocol
+    from thalamus.selection import ContextSelector
+    from thalamus_research.baselines import TFIDFSelector, BM25Selector, SelectorProtocol
 
     selectors: dict[str, SelectorProtocol] = {
         "thalamus": ContextSelector.load(oracle_dir),
@@ -46,7 +46,7 @@ from .tfidf_selector import TFIDFSelector
 from .bm25_selector import BM25Selector
 
 # DenseSelector imported lazily to avoid hard dependency on sentence-transformers.
-# Use: from thalamus.baselines.dense_selector import DenseSelector
+# Use: from thalamus_research.baselines.dense_selector import DenseSelector
 
 __all__ = [
     "SelectorProtocol",

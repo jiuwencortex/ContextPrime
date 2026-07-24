@@ -202,7 +202,7 @@ pipeline. Phase 4 is an optional online learning layer.
 **Goal.** Produce a scored matrix for every component in C, capturing its relevance signal
 across a representative sample of query types.
 
-For each component cᵢ, the `component_scoring` pipeline:
+For each component cᵢ, the `scoring` pipeline:
 
 1. Generates M synthetic (query, expected_answer) pairs covering the component's domain,
    using a language model prompted with the component's text. Default M = 5.

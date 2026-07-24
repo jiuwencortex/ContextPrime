@@ -65,7 +65,7 @@ class SingleBudgetSelector:
         fixed_budget:
             ``"small"``, ``"medium"`` (default), or ``"large"``.
         """
-        from thalamus.context_selectors.by_clusters.cluster_selector import ClusterSelector
+        from thalamus.selection.by_clusters.cluster_selector import ClusterSelector
         return cls(ClusterSelector.load(Path(oracle_dir)), fixed_budget=fixed_budget)
 
     # ── SelectorProtocol ──────────────────────────────────────────────────────

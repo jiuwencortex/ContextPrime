@@ -2,6 +2,9 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+# ── Production package ───────────────────────────────────────────────────────
+# Covers the three-phase build pipeline (score → oracle → select) and the
+# shared runtime utilities.  Research tooling lives in thalamus_research/.
 [project]
 name = "thalamus"
 version = "0.1.0"
@@ -18,20 +21,21 @@ dependencies = [
 sentence = ["sentence-transformers>=2.2"]
 # BERTScore evaluation metric (--metrics bert_score)
 bertscore = ["bert-score>=0.3"]
-# All optional extras
 all = ["thalamus[sentence,bertscore]"]
 
 [project.scripts]
 # Phase 1 — score each component against a representative query sample
-thalamus-score    = "thalamus.component_scoring.cli:main"
-# Phase 3 — build / retrain / tune the oracle from scoring matrices
-thalamus-oracle   = "thalamus.oracle_builder.cli:main"
-# Runtime — assign a query to a context configuration (production)
-thalamus-select   = "thalamus.context_selectors.cli:main"
-# Research — baseline selectors, evaluation harness, and future R2-R5 tools
-thalamus-research = "thalamus_research.cli:main"
+thalamus-score  = "thalamus.scoring.cli:main"
+# Phase 2 — build / retrain / tune the oracle from scoring matrices
+thalamus-oracle = "thalamus.oracle.cli:main"
+# Runtime — sub-10ms query → context selection
+thalamus-select = "thalamus.selection.cli:main"
 
-# ── Package discovery ────────────────────────────────────────────────────────
-# All sub-systems live under thalamus/ — a single namespace package.
 [tool.hatch.build.targets.wheel]
 packages = ["thalamus"]
+
+# ── uv workspace ─────────────────────────────────────────────────────────────
+# `uv sync`                  installs thalamus + thalamus-research
+# `uv sync --package thalamus` installs production only
+[tool.uv.workspace]
+members = ["thalamus_research"]

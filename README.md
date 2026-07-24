@@ -116,9 +116,9 @@ thalamus-select lookup            --oracle-dir ... --query "..." --budget auto
 Or via `python -m`:
 
 ```bash
-python -m thalamus.component_scoring  build   --type all ...
-python -m thalamus.oracle_builder     evolve  --oracle-dir ...
-python -m thalamus.context_selectors  lookup  --oracle-dir ... --query "..."
+python -m thalamus.scoring  build   --type all ...
+python -m thalamus.oracle     evolve  --oracle-dir ...
+python -m thalamus.selection  lookup  --oracle-dir ... --query "..."
 ```
 
 ---
@@ -127,7 +127,7 @@ python -m thalamus.context_selectors  lookup  --oracle-dir ... --query "..."
 
 ```python
 # Select context for a query at runtime (Path A — cluster lookup)
-from thalamus.context_selectors.by_clusters.cluster_selector import ClusterSelector
+from thalamus.selection.by_clusters.cluster_selector import ClusterSelector
 
 selector = ClusterSelector.load("/path/to/oracle")
 config = selector.select("Set up a CI pipeline", budget="auto", ordering="bookend")
@@ -135,11 +135,11 @@ config = selector.select("Set up a CI pipeline", budget="auto", ordering="booken
 
 
 # Log an agent turn for classifier training (Path B)
-from thalamus.shared.turn_logger import TurnLogger
+from thalamus._shared.turn_logger import TurnLogger
 
 logger = TurnLogger("/path/to/oracle/online_logs")
 turn_id = logger.log_turn(
-    query_embedding=embedding_vector,        # numpy array, not raw text
+    query_embedding=embedding_vector,  # numpy array, not raw text
     context_config=config,
     exploration_rate=0.05,
     all_component_names={"skills": [...], "memory": [...], "tools": [...]}
@@ -162,7 +162,7 @@ logger.update_outcome(
 
 ```
 thalamus/
-  component_scoring/      # Phase 1–2: scan, evaluate, score components
+  scoring/                # Phase 1–2: scan, evaluate, score components
     skills/               #   SKILL.md scanner + composer
     memory/               #   Markdown section scanner + composer
     tools/                #   Python AST tool scanner + composer
@@ -170,15 +170,15 @@ thalamus/
     shared/               #   Generic pipeline: generator, evaluator, metrics
       metrics/            #   F1, bigram F1, bag-of-words, length ratio,
                           #   optional BERTScore and LLM-judge
-  oracle_builder/         # Phase 3–4: build lookup table and train classifier
+  oracle/                 # Phase 3–4: build lookup table and train classifier
     evolutionary/         #   K-means clustering + genetic algorithm oracle
     classifier/           #   Logistic regression classifier, versioning, tuning
     hyperparameters_tuner/ #  Auto-tune K, λ, C, thresholds from turn data
     rebuild_recommender/  #   Drift detection + staleness checker
-  context_selectors/      # Runtime: select context for a query
+  selection/              # Runtime: select context for a query
     by_clusters/          #   Path A: cluster lookup (ClusterSelector)
     by_classifier/        #   Path B: per-component probabilities (ClassifierSelector)
-  shared/                 # Cross-package utilities
+  _shared/                # Cross-package utilities
     turn_logger.py        #   Log agent turns to JSONL
     outcome_scorer.py     #   Quality signal from implicit/explicit signals
     query_clusterer.py    #   TF-IDF / sentence-transformer clustering backend

@@ -33,8 +33,8 @@ class BenchmarkRunner:
 
     Usage::
 
-        from thalamus.context_selectors import ContextSelector
-        from thalamus.baselines import TFIDFSelector, BM25Selector
+        from thalamus.selection import ContextSelector
+        from thalamus_research.baselines import TFIDFSelector, BM25Selector
 
         selectors = {
             "thalamus": ContextSelector.load(oracle_dir),

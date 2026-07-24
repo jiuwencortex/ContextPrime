@@ -25,7 +25,7 @@ echo "  Budget     : $BUDGET"
 echo "  Ordering   : $ORDERING"
 echo ""
 
-python -m thalamus.context_selectors lookup \
+python -m thalamus.selection lookup \
   --oracle-dir "$ORACLE_DIR" \
   --query      "$QUERY" \
   --budget     "$BUDGET" \

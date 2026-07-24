@@ -25,7 +25,7 @@ echo "  Log dir    : $LOG_DIR"
 echo "  Min turns  : $MIN_TURNS"
 echo ""
 
-python -m thalamus.oracle_builder train-classifier \
+python -m thalamus.oracle train-classifier \
   --oracle-dir "$ORACLE_DIR" \
   --log-dir    "$LOG_DIR" \
   --min-turns  "$MIN_TURNS" \

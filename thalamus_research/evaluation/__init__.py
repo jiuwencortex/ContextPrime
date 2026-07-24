@@ -6,9 +6,9 @@ pass can update with actual task success scores.
 
 Usage::
 
-    from thalamus.evaluation import BenchmarkRunner, EvalRun, print_report
-    from thalamus.context_selectors import ContextSelector
-    from thalamus.baselines import TFIDFSelector, BM25Selector
+    from thalamus_research.evaluation import BenchmarkRunner, EvalRun, print_report
+    from thalamus.selection import ContextSelector
+    from thalamus_research.baselines import TFIDFSelector, BM25Selector
 
     selectors = {
         "thalamus": ContextSelector.load(oracle_dir),
@@ -21,7 +21,7 @@ Usage::
 
 CLI::
 
-    thalamus-select eval \\
+    thalamus-research eval \\
         --oracle-dir /oracle \\
         --selectors thalamus tfidf bm25 random \\
         --queries-file task_suite.json \\

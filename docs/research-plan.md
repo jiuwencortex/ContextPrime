@@ -226,7 +226,7 @@ Measure quality degradation from removing each component.
 **Jiuwenswarm deployment output:**
 - Tuned default hyperparameters for jiuwenswarm's Thalamus deployment
   (budget thresholds, GA population/generations, exploration rate, bookend vs relevance).
-- These replace the current hardcoded defaults in `oracle_builder` and `context_selectors`.
+- These replace the current hardcoded defaults in `oracle` and `selection`.
 
 **Publication target:** Extended version of R1 paper. Or standalone workshop paper
 (NeurIPS/ICLR Efficient ML track, LLM Agents workshop).
@@ -500,7 +500,7 @@ Thalamus already has the full production system. The additions required for rese
    Alternate implementations = classifier-prior-augmented, XGB set-level model.
 
 4. **Exploration rate analysis** (R3b): `tune --auto-exploration` command in
-   `oracle_builder`.
+   `oracle`.
 
 5. **Knowledge base** (R5): `shared/knowledge_base.py` — flat fingerprint-indexed
    JSON with merge/init CLI operations.

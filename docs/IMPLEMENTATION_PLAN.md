@@ -329,7 +329,7 @@ The plan follows the ordering from Slide 39 ("Road to AutoML"). Each step must b
 
 3f. Add a `tune` subcommand to the oracle_builder CLI:
 ```
-python -m thalamus.oracle_builder tune --oracle-dir /oracle
+python -m thalamus.oracle tune --oracle-dir /oracle
 ```
 Runs all tuners and reports results without rebuilding the full oracle.
 
@@ -398,7 +398,7 @@ Runs all tuners and reports results without rebuilding the full oracle.
 
 5c. Add a `status` subcommand to the oracle_builder CLI:
 ```
-python -m thalamus.oracle_builder status --oracle-dir /oracle --skills-dir /skills ...
+python -m thalamus.oracle status --oracle-dir /oracle --skills-dir /skills ...
 ```
 Runs drift monitor and staleness checker, prints a human-readable summary.
 
@@ -414,7 +414,7 @@ Runs drift monitor and staleness checker, prints a human-readable summary.
 
 5e. Add a `check-rebuild` subcommand that prints a recommendation:
 ```
-python -m thalamus.oracle_builder check-rebuild --oracle-dir /oracle
+python -m thalamus.oracle check-rebuild --oracle-dir /oracle
 ```
 Prints: "REBUILD RECOMMENDED: [reasons]" or "NO REBUILD NEEDED".
 
@@ -499,7 +499,7 @@ Prints: "REBUILD RECOMMENDED: [reasons]" or "NO REBUILD NEEDED".
 
 7d. Add `train-fitness-model` subcommand to oracle_builder CLI:
 ```
-python -m thalamus.oracle_builder train-fitness-model --oracle-dir /oracle --min-turns 200
+python -m thalamus.oracle train-fitness-model --oracle-dir /oracle --min-turns 200
 ```
 
 **Verification:** on a synthetic dataset with a known component pair (A+B jointly useful), confirm the learned fitness model scores the bitmask [A=1, B=1] higher than [A=1, B=0] or [A=0, B=1]. Confirm the hand-crafted formula does not.
@@ -539,7 +539,7 @@ python -m thalamus.oracle_builder train-fitness-model --oracle-dir /oracle --min
 
 8d. Add `train-joint-classifier` subcommand to the oracle_builder CLI:
 ```
-python -m thalamus.oracle_builder train-joint-classifier --oracle-dir /oracle --min-turns 1000
+python -m thalamus.oracle train-joint-classifier --oracle-dir /oracle --min-turns 1000
 ```
 
 8e. A/B comparison utility:

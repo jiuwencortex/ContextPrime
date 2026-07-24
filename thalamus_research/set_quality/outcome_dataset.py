@@ -172,7 +172,7 @@ class OutcomeDataset:
 
     @staticmethod
     def _load_clusterer(oracle_dir: Path):
-        from thalamus.shared.query_clusterer import QueryClusterer
+        from thalamus._shared.query_clusterer import QueryClusterer
         pkl_path = oracle_dir / "context_configs.pkl"
         if not pkl_path.exists():
             raise FileNotFoundError(

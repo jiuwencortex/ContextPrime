@@ -48,7 +48,7 @@ class NoBookendSelector:
         FileNotFoundError
             If ``context_configs.json`` is absent.
         """
-        from thalamus.context_selectors.by_clusters.cluster_selector import ClusterSelector
+        from thalamus.selection.by_clusters.cluster_selector import ClusterSelector
         return cls(ClusterSelector.load(Path(oracle_dir)))
 
     # ── SelectorProtocol ──────────────────────────────────────────────────────

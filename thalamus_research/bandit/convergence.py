@@ -133,9 +133,9 @@ class ConvergenceAnalyzer:
     Parameters
     ----------
     cluster_selector:
-        Loaded :class:`~thalamus.context_selectors.by_clusters.ClusterSelector`.
+        Loaded :class:`~thalamus.selection.by_clusters.ClusterSelector`.
     clusterer:
-        Loaded :class:`~thalamus.shared.query_clusterer.QueryClusterer`.
+        Loaded :class:`~thalamus._shared.query_clusterer.QueryClusterer`.
     turn_records:
         List of raw turn log dicts loaded from JSONL files.
     oracle_dir:
@@ -178,8 +178,8 @@ class ConvergenceAnalyzer:
         oracle_dir = Path(oracle_dir)
         log_dir = Path(turn_log_dir) if turn_log_dir else oracle_dir
 
-        from thalamus.context_selectors.by_clusters.cluster_selector import ClusterSelector
-        from thalamus.shared.query_clusterer import QueryClusterer
+        from thalamus.selection.by_clusters.cluster_selector import ClusterSelector
+        from thalamus._shared.query_clusterer import QueryClusterer
 
         cluster_selector = ClusterSelector.load(oracle_dir)
         pkl_path = oracle_dir / "context_configs.pkl"

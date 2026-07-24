@@ -114,7 +114,7 @@ shared/               Utilities used by all: TurnLogger, OutcomeScorer,
                       QueryClusterer, ComponentInclusionClassifier, bookend_order
 ```
 
-Strict boundary: no package imports from another package. Both `oracle_builder` and `context_selectors` import from `shared`. Neither imports the other.
+Strict boundary: no package imports from another package. Both `oracle` and `selection` import from `shared`. Neither imports the other.
 
 Artifacts flow in two independent paths:
 
@@ -1879,7 +1879,7 @@ graph TD
 
 ```bash
 # Path A — Stage 1+2: score components
-python -m jiuwenswarm.thalamus.component_scoring build \
+python -m jiuwenswarm.thalamus.scoring build \
     --type {skills|memory|tools|enrich|all} \
     --skills-dir /path --project-dir /path --tools-dir /path \
     --matrix-dir /oracle --model gpt-4o-mini --api-key $KEY \
@@ -1887,57 +1887,57 @@ python -m jiuwenswarm.thalamus.component_scoring build \
     --eval-combination-size 1
 
 # Path A — Stages 3–5: build oracle (cluster, evolve, write)
-python -m jiuwenswarm.thalamus.oracle_builder evolve \
+python -m jiuwenswarm.thalamus.oracle evolve \
     --oracle-dir /oracle --n-clusters 20 --population 100 --generations 200
 
 # Path A — with semantic clustering
-python -m jiuwenswarm.thalamus.oracle_builder evolve \
+python -m jiuwenswarm.thalamus.oracle evolve \
     --oracle-dir /oracle --embedder sentence --sentence-model all-MiniLM-L6-v2
 
 # Path A — with Pareto validation
-python -m jiuwenswarm.thalamus.oracle_builder evolve \
+python -m jiuwenswarm.thalamus.oracle evolve \
     --oracle-dir /oracle --validate-pareto \
     --eval-model gpt-4o-mini --eval-api-key $KEY --eval-queries-per-cluster 3
 
 # Path B: train classifier
-python -m jiuwenswarm.thalamus.oracle_builder train-classifier \
+python -m jiuwenswarm.thalamus.oracle train-classifier \
     --oracle-dir /oracle --min-turns 10 \
     --judge-model gpt-4o-mini --judge-api-key $KEY \
     --force-promote
 
 # Query time lookup (Path A — cluster-based)
-python -m jiuwenswarm.thalamus.context_selectors lookup \
+python -m jiuwenswarm.thalamus.selection lookup \
     --oracle-dir /oracle \
     --query "Set up a CI pipeline" --budget auto --ordering bookend
 
 # Path B — list classifier versions
-python -m jiuwenswarm.thalamus.oracle_builder list-versions \
+python -m jiuwenswarm.thalamus.oracle list-versions \
     --oracle-dir /oracle
 
 # Path B — tune hyperparameters (grid-search C, threshold, K, λ)
-python -m jiuwenswarm.thalamus.oracle_builder tune \
+python -m jiuwenswarm.thalamus.oracle tune \
     --oracle-dir /oracle --log-dir /logs
 
 # Monitoring — check drift and staleness
-python -m jiuwenswarm.thalamus.oracle_builder status \
+python -m jiuwenswarm.thalamus.oracle status \
     --oracle-dir /oracle --skills-dir /skills --project-dir /project --tools-dir /tools
 
 # Monitoring — recommend rebuild or retrain
-python -m jiuwenswarm.thalamus.oracle_builder check-rebuild \
+python -m jiuwenswarm.thalamus.oracle check-rebuild \
     --oracle-dir /oracle
 
 # Query time classify (Path B — classifier-based)
-python -m jiuwenswarm.thalamus.context_selectors classify \
+python -m jiuwenswarm.thalamus.selection classify \
     --oracle-dir /oracle --embedding ./query.npy --threshold 0.5 --verbose
 ```
 
 **Python API (unified entry point — recommended):**
 
 ```python
-from thalamus.context_selectors import ContextSelector
+from thalamus.selection import ContextSelector
 
 selector = ContextSelector.load("/oracle")
-print(selector.active_path)          # "classifier" | "cluster" | "none"
+print(selector.active_path)  # "classifier" | "cluster" | "none"
 
 result = selector.select("Set up a CI pipeline")
 # result = {"skills": [...], "memory": [...], "tools": [...], ...}

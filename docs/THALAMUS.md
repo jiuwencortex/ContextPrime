@@ -424,11 +424,11 @@ graph TD
     RML -.->|reads scoring matrices + oracle| CS
 ```
 
-**`component_scoring/`** handles Phases 1 and 2. It scans component sources, runs LLM evaluation, and writes scoring matrices. It also provides the `enrich` build type that blends real turn data into existing matrices. It has no dependency on `oracle_builder` or `context_selectors`.
+**`component_scoring/`** handles Phases 1 and 2. It scans component sources, runs LLM evaluation, and writes scoring matrices. It also provides the `enrich` build type that blends real turn data into existing matrices. It has no dependency on `oracle` or `selection`.
 
-**`oracle_builder/`** handles Phases 3 and 4. The `evolutionary/` subpackage implements the seven-step config building pipeline, including optional sentence-transformer clustering, component relevance sorting, and optional LLM Pareto validation. The `classifier/` subpackage implements the supervised classifier trainer. It has no dependency on `context_selectors`.
+**`oracle_builder/`** handles Phases 3 and 4. The `evolutionary/` subpackage implements the seven-step config building pipeline, including optional sentence-transformer clustering, component relevance sorting, and optional LLM Pareto validation. The `classifier/` subpackage implements the supervised classifier trainer. It has no dependency on `selection`.
 
-**`context_selectors/`** handles runtime inference. It loads the artifacts produced by `oracle_builder` and provides `ContextSelector` (the unified entry point: attempts Path B classifier first, falls back to Path A cluster lookup, returns `None` if neither is available), `ClusterSelector` (with relevance ordering, bookend ordering, and auto-budget support), `ClassifierSelector`, and `BudgetEstimator`. It has no dependency on `oracle_builder` or `component_scoring`.
+**`context_selectors/`** handles runtime inference. It loads the artifacts produced by `oracle` and provides `ContextSelector` (the unified entry point: attempts Path B classifier first, falls back to Path A cluster lookup, returns `None` if neither is available), `ClusterSelector` (with relevance ordering, bookend ordering, and auto-budget support), `ClassifierSelector`, and `BudgetEstimator`. It has no dependency on `oracle` or `scoring`.
 
 **`shared/`** contains utilities used by more than one package: `TurnLogger` (with off-policy exploration), `OutcomeScorer`, `QueryClusterer` (dual TF-IDF / sentence-transformer backend), `ComponentInclusionClassifier`, and `bookend_order`. It has no dependencies on other packages in the system.
 
@@ -515,7 +515,7 @@ Each package provides a self-contained command-line interface invoked as a Pytho
 
 ```bash
 # Phase 1 + 2: Build or enrich scoring matrices
-python -m jiuwenswarm.thalamus.component_scoring build \
+python -m jiuwenswarm.thalamus.scoring build \
     --type {skills|memory|tools|enrich|all} \
     --skills-dir  /path/to/skills \
     --project-dir /path/to/project \
@@ -524,36 +524,36 @@ python -m jiuwenswarm.thalamus.component_scoring build \
     --model gpt-4o-mini --api-key $KEY
 
 # Phase 3: Build context_configs.json (TF-IDF clustering, default)
-python -m jiuwenswarm.thalamus.oracle_builder evolve \
+python -m jiuwenswarm.thalamus.oracle evolve \
     --oracle-dir /path/to/oracle \
     --n-clusters 20 --population 100 --generations 200
 
 # Phase 3: Build with semantic sentence-transformer clustering
-python -m jiuwenswarm.thalamus.oracle_builder evolve \
+python -m jiuwenswarm.thalamus.oracle evolve \
     --oracle-dir /path/to/oracle \
     --embedder sentence --sentence-model all-MiniLM-L6-v2
 
 # Phase 3: Build with end-to-end LLM Pareto validation
-python -m jiuwenswarm.thalamus.oracle_builder evolve \
+python -m jiuwenswarm.thalamus.oracle evolve \
     --oracle-dir /path/to/oracle \
     --validate-pareto --eval-model gpt-4o-mini \
     --eval-api-key $KEY --eval-queries-per-cluster 3
 
 # Phase 4: Train inclusion classifier
-python -m jiuwenswarm.thalamus.oracle_builder train-classifier \
+python -m jiuwenswarm.thalamus.oracle train-classifier \
     --oracle-dir /path/to/oracle --min-turns 10
 
 # Inspect a built oracle (cluster summary)
-python -m jiuwenswarm.thalamus.context_selectors lookup \
+python -m jiuwenswarm.thalamus.selection lookup \
     --oracle-dir /path/to/oracle
 
 # Query a specific config with auto budget and bookend ordering
-python -m jiuwenswarm.thalamus.context_selectors lookup \
+python -m jiuwenswarm.thalamus.selection lookup \
     --oracle-dir /path/to/oracle \
     --query "Set up a CI pipeline" --budget auto --ordering bookend
 
 # Classify a query using the trained classifier
-python -m jiuwenswarm.thalamus.context_selectors classify \
+python -m jiuwenswarm.thalamus.selection classify \
     --oracle-dir /path/to/oracle \
     --embedding ./query.npy --threshold 0.5 --verbose
 ```

@@ -1,0 +1,45 @@
+[build-system]
+# setuptools is used here (not hatchling) because pyproject.toml sits inside
+# thalamus_research/, which is itself the Python package.  setuptools'
+# package-dir lets us point one level up to locate the source.
+# If you later add a src/ layout (thalamus_research/thalamus_research/),
+# switch back to hatchling and remove package-dir.
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+# ── Research package ─────────────────────────────────────────────────────────
+# Never imported by production code.  Adds the thalamus-research CLI and
+# all R1-R5 experimentation tooling.
+[project]
+name = "thalamus-research"
+version = "0.1.0"
+description = "Research tooling for THALAMUS: baselines, evaluation harness, ablations, and R1–R5 experiments."
+requires-python = ">=3.10"
+dependencies = [
+    "thalamus",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+sentence  = ["sentence-transformers>=2.2"]
+bertscore = ["bert-score>=0.3"]
+
+[project.scripts]
+thalamus-research = "thalamus_research.cli:main"
+
+# ── Workspace source resolution ──────────────────────────────────────────────
+# Tell uv to use the local workspace version of thalamus, not PyPI.
+[tool.uv.sources]
+thalamus = { workspace = true }
+
+# ── Package discovery ─────────────────────────────────────────────────────────
+# package-dir tells setuptools that Python packages live one level above this
+# pyproject.toml (i.e. in Thalamus/, not in Thalamus/thalamus_research/).
+[tool.setuptools]
+package-dir = {"" = ".."}
+
+[tool.setuptools.packages.find]
+where   = [".."]
+include = ["thalamus_research", "thalamus_research.*"]

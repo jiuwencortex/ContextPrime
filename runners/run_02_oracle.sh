@@ -43,7 +43,7 @@ if [[ "$AUTO_K" == "true" ]]; then
   AUTO_K_FLAG="--auto-k"
 fi
 
-python -m thalamus.oracle_builder evolve \
+python -m thalamus.oracle evolve \
   --oracle-dir    "$ORACLE_DIR" \
   --embedder      "$EMBEDDER" \
   --n-clusters    "$N_CLUSTERS" \

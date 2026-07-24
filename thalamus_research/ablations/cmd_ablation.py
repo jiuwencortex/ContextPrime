@@ -28,7 +28,7 @@ _DEFAULT_ABLATIONS = ["topk", "no_bookend", "single_budget_med", "path_b_only"]
 
 def _load_selectors(oracle_dir: Path) -> dict:
     """Load the full ContextSelector plus all query-time ablation selectors."""
-    from thalamus.context_selectors import ContextSelector
+    from thalamus.selection import ContextSelector
     from thalamus_research.ablations import (
         TopKSelector,
         NoBookendSelector,
