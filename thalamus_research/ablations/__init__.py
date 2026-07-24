@@ -11,20 +11,20 @@ Ablation variants
 - :class:`SingleBudgetSelector`  — GA with fixed budget, no adaptation (C6)
 - :class:`PathBOnlySelector`     — Path B only, no Path A fallback (C3)
 
-All implement :class:`~thalamus.research.baselines.protocol.SelectorProtocol`.
+All implement :class:`~thalamus_research.baselines.protocol.SelectorProtocol`.
 
 Not implemented as query-time selectors (require build-time changes):
 - "No enrichment" ablation: re-run ``thalamus-score --type all`` (skip enrich)
   into a separate oracle directory, then compare using the standard
   ``ContextSelector.load(no_enrich_oracle_dir)``.
 - "No exploration (ε=0)" ablation: filter turn logs to non-explored turns before
-  training the classifier.  See :mod:`thalamus.research.bandit` for the
+  training the classifier.  See :mod:`thalamus_research.bandit` for the
   exploration-rate analysis tooling.
 
 Typical usage in ``BenchmarkRunner``::
 
     from thalamus.context_selectors import ContextSelector
-    from thalamus.research.ablations import (
+    from thalamus_research.ablations import (
         TopKSelector, NoBookendSelector, SingleBudgetSelector, PathBOnlySelector
     )
 

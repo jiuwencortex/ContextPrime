@@ -2023,7 +2023,7 @@ What remains to move THALAMUS from a well-engineered MLOps system toward full Au
 
 ## Slide 43 — Research Package
 
-The `research/` subpackage is THALAMUS's scientific layer. It is never loaded at query time and has no impact on production latency. Its purpose is to evaluate how well THALAMUS performs versus alternative selection strategies — and to generate the data needed to publish that evaluation.
+The `../thalamus_research/` subpackage is THALAMUS's scientific layer. It is never loaded at query time and has no impact on production latency. Its purpose is to evaluate how well THALAMUS performs versus alternative selection strategies — and to generate the data needed to publish that evaluation.
 
 **Package structure:**
 
@@ -2093,7 +2093,7 @@ thalamus-research meta-learning --oracle-dir /oracle --kb-path /shared/kb.json -
 
 **Workflow:** The evaluation harness compares THALAMUS against baselines (R1) and ablation variants (R2) on a fixed task suite, measures latency and component overlap, and writes structured `EvalRun` JSON files. Quality scores (`quality=null`) are filled in by a separate jiuwenswarm pass. The cross-path tools (R3a) extract co-inclusion signal from the classifier and annotate `context_configs.json` with augmented fitness scores. The bandit tools (R3b) derive the minimum exploration rate ε\* and track Path B convergence over turn history. The resulting data supports all six research contributions (C1–C6).
 
-**Separation principle:** `thalamus-research` is a separate CLI entry point from `thalamus-select`. Research imports live entirely under `research/`. The four production packages (`component_scoring/`, `oracle_builder/`, `context_selectors/`, `shared/`) have no dependency on `research/`.
+**Separation principle:** `thalamus-research` is a separate CLI entry point from `thalamus-select`. Research imports live entirely under `../thalamus_research/`. The four production packages (`component_scoring/`, `oracle_builder/`, `context_selectors/`, `shared/`) have no dependency on `../thalamus_research/`.
 
 ---
 

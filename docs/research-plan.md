@@ -172,7 +172,7 @@ formulation + evaluation protocol.
 
 **Implementation status: ✓ COMPLETE**
 
-The following artifacts have been implemented under `thalamus/research/`:
+The following artifacts have been implemented under `../thalamus_research/`:
 
 | Artifact | Location | Notes |
 |---|---|---|
@@ -187,7 +187,7 @@ The following artifacts have been implemented under `thalamus/research/`:
 | `OverlapStats` | `evaluation/overlap_stats.py` | Jaccard, precision, recall per query; means over task suite |
 | `BenchmarkRunner` | `evaluation/benchmark_runner.py` | Median latency over `n_repeats`; overlap vs reference selector; writes `EvalRun` JSON |
 | ASCII report | `evaluation/report.py` | Comparison table: selector × {mean_ms, p95_ms, mean_n, jaccard, precision, recall, quality} |
-| `thalamus-research` CLI | `research/cli.py`, `cli_args_parser.py` | `baseline-lookup` (single/multi selector comparison) + `eval` (full benchmark run) |
+| `thalamus-research` CLI | `../thalamus_research/cli.py`, `cli_args_parser.py` | `baseline-lookup` (single/multi selector comparison) + `eval` (full benchmark run) |
 
 **Remaining before R1 results are reportable:**
 1. Run `thalamus-research eval` on the 120-task jiuwenswarm suite to generate `EvalRun` JSON files.
@@ -242,7 +242,7 @@ Measure quality degradation from removing each component.
 
 Build-time ablation variants (require a separate oracle directory):
 - **No enrichment**: re-run `thalamus-score --type all` without the `enrich` step, store in separate oracle dir, evaluate with `ContextSelector.load(no_enrich_dir)`.
-- **No exploration (ε=0)**: filter turn logs to `exploration.explored=false` before training classifier.  See `research/bandit/` for the exploration-rate analysis that quantifies what this loses.
+- **No exploration (ε=0)**: filter turn logs to `exploration.explored=false` before training classifier.  See `../thalamus_research/bandit/` for the exploration-rate analysis that quantifies what this loses.
 
 CLI: `thalamus-research ablation --oracle-dir /oracle --query-file tasks.jsonl --out ablation.json`
 
@@ -387,7 +387,7 @@ skill + multiple augmentation skills).
 
 **Implementation status: ✓ COMPLETE**
 
-The following artifacts have been implemented under `thalamus/research/set_quality/`:
+The following artifacts have been implemented under `../thalamus_research/set_quality/`:
 
 | Artifact | Location | Notes |
 |---|---|---|
@@ -442,7 +442,7 @@ Learning track). Prerequisite: at least 3 distinct jiuwenswarm deployments exist
 
 **Implementation status: ✓ COMPLETE**
 
-The following artifacts have been implemented under `thalamus/research/meta_learning/`:
+The following artifacts have been implemented under `../thalamus_research/meta_learning/`:
 
 | Artifact | Location | Notes |
 |---|---|---|

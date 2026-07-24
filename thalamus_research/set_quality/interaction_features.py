@@ -23,7 +23,7 @@ Feature layout (14 + n_cluster_buckets floats)
 
 Usage::
 
-    from thalamus.research.set_quality.interaction_features import compute_feature_vector
+    from thalamus_research.set_quality.interaction_features import compute_feature_vector
 
     fvec = compute_feature_vector(
         component_names=["skill_a", "tool_b"],
@@ -62,11 +62,11 @@ def compute_feature_vector(
     cluster_id:
         The query cluster this set is evaluated against.
     catalog:
-        :class:`~thalamus.research.baselines.component_catalog.ComponentCatalog`
+        :class:`~thalamus_research.baselines.component_catalog.ComponentCatalog`
         for score and type lookups.
     extractor:
         Optional
-        :class:`~thalamus.research.cross_path.co_inclusion_extractor.CoInclusionExtractor`.
+        :class:`~thalamus_research.cross_path.co_inclusion_extractor.CoInclusionExtractor`.
         If *None*, co-inclusion features are set to 0.
 
     Returns

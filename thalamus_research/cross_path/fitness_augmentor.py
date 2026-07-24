@@ -36,8 +36,8 @@ This module provides:
 
 Usage::
 
-    from thalamus.research.cross_path.co_inclusion_extractor import CoInclusionExtractor
-    from thalamus.research.cross_path.fitness_augmentor import FitnessAugmentor
+    from thalamus_research.cross_path.co_inclusion_extractor import CoInclusionExtractor
+    from thalamus_research.cross_path.fitness_augmentor import FitnessAugmentor
 
     extractor = CoInclusionExtractor.load("/oracle")
     augmentor = FitnessAugmentor(extractor, lam=0.2)

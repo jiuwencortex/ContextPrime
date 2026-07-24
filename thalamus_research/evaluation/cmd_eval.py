@@ -120,19 +120,19 @@ def _load_selector(name: str, oracle_dir: Path, seed: int | None = None):
         from ..context_selectors import ContextSelector
         return ContextSelector.load(oracle_dir)
     elif name == "all":
-        from thalamus.research.baselines import AllSelector
+        from thalamus_research.baselines import AllSelector
         return AllSelector.load(oracle_dir)
     elif name == "random":
-        from thalamus.research.baselines import RandomSelector
+        from thalamus_research.baselines import RandomSelector
         return RandomSelector.load(oracle_dir, seed=seed)
     elif name == "tfidf":
-        from thalamus.research.baselines import TFIDFSelector
+        from thalamus_research.baselines import TFIDFSelector
         return TFIDFSelector.load(oracle_dir)
     elif name == "bm25":
-        from thalamus.research.baselines import BM25Selector
+        from thalamus_research.baselines import BM25Selector
         return BM25Selector.load(oracle_dir)
     elif name == "dense":
-        from thalamus.research.baselines.dense_selector import DenseSelector
+        from thalamus_research.baselines.dense_selector import DenseSelector
         return DenseSelector.load(oracle_dir)
     else:
         raise ValueError(f"Unknown selector: {name!r}")

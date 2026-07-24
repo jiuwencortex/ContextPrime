@@ -21,7 +21,7 @@ from pathlib import Path
 
 def make_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="python -m thalamus.research",
+        prog="python -m thalamus_research",
         description=(
             "THALAMUS research tools.\n\n"
             "  baseline-lookup — run a query through retrieval baselines (Phase R1)\n"

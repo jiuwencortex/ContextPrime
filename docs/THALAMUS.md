@@ -385,7 +385,7 @@ After each selection, the runtime logs the turn: the query embedding and selecte
 
 ### 9.1 Package Structure
 
-The implementation is organized into five packages. The four production packages maintain strict boundary separation — no package imports from another except through the shared utilities layer. The fifth package, `research/`, is an optional add-on that reads production artifacts for evaluation and experimentation; it has no production dependencies and is not loaded at query time.
+The implementation is organized into five packages. The four production packages maintain strict boundary separation — no package imports from another except through the shared utilities layer. The fifth package, `../thalamus_research/`, is an optional add-on that reads production artifacts for evaluation and experimentation; it has no production dependencies and is not loaded at query time.
 
 ```mermaid
 graph TD
@@ -432,7 +432,7 @@ graph TD
 
 **`shared/`** contains utilities used by more than one package: `TurnLogger` (with off-policy exploration), `OutcomeScorer`, `QueryClusterer` (dual TF-IDF / sentence-transformer backend), `ComponentInclusionClassifier`, and `bookend_order`. It has no dependencies on other packages in the system.
 
-**`research/`** is the research add-on package. It is never loaded at query time and has no impact on production latency. Its subpackages:
+**`../thalamus_research/`** is the research add-on package. It is never loaded at query time and has no impact on production latency. Its subpackages:
 
 - **`baselines/`** — five alternative context selectors (`AllSelector`, `RandomSelector`, `TFIDFSelector`, `BM25Selector`, `DenseSelector`) that all implement `SelectorProtocol`, making them drop-in substitutes for `ContextSelector` in experiments (Phase R1).
 - **`evaluation/`** — a `BenchmarkRunner` that runs any set of selectors over a query suite, records median latency, Jaccard/precision/recall overlap against a reference selector, and writes structured `EvalRun` JSON for downstream quality measurement (Phase R1).

@@ -19,7 +19,7 @@ uses to optimise per-cluster configurations.
 
 Usage::
 
-    from thalamus.research.set_quality.outcome_dataset import OutcomeDataset
+    from thalamus_research.set_quality.outcome_dataset import OutcomeDataset
 
     ds = OutcomeDataset.load("/oracle", turn_log_dir="/oracle")
     print(f"{len(ds)} training records")
@@ -143,10 +143,10 @@ class OutcomeDataset:
         Parameters
         ----------
         catalog:
-            :class:`~thalamus.research.baselines.component_catalog.ComponentCatalog`
+            :class:`~thalamus_research.baselines.component_catalog.ComponentCatalog`
             for score and type lookups.
         extractor:
-            Optional :class:`~thalamus.research.cross_path.co_inclusion_extractor.CoInclusionExtractor`
+            Optional :class:`~thalamus_research.cross_path.co_inclusion_extractor.CoInclusionExtractor`
             for pairwise co-inclusion features.  If None, co-inclusion features
             are set to 0.
 

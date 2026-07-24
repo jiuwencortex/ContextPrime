@@ -16,7 +16,7 @@ prevents boundary ambiguity (``"a" + "bc"`` ≠ ``"ab" + "c"``).
 
 Usage::
 
-    from thalamus.research.meta_learning.component_fingerprint import (
+    from thalamus_research.meta_learning.component_fingerprint import (
         fingerprint_component,
         fingerprint_catalog,
     )

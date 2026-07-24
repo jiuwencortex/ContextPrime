@@ -51,7 +51,7 @@ def _run_estimate_rate(oracle_dir: Path, args, out_path: Path | None) -> None:
     T_target: int = int(getattr(args, "T_target", 500))
 
     try:
-        from thalamus.research.bandit.exploration_rate import ExplorationRateEstimator
+        from thalamus_research.bandit.exploration_rate import ExplorationRateEstimator
         estimator = ExplorationRateEstimator.load(oracle_dir)
     except FileNotFoundError as exc:
         logger.error("%s", exc)
@@ -103,7 +103,7 @@ def _run_convergence(oracle_dir: Path, args, out_path: Path | None) -> None:
     budget: str = getattr(args, "budget", "medium")
 
     try:
-        from thalamus.research.bandit.convergence import ConvergenceAnalyzer
+        from thalamus_research.bandit.convergence import ConvergenceAnalyzer
         analyzer = ConvergenceAnalyzer.load(oracle_dir, turn_log_dir=turn_log_dir)
     except FileNotFoundError as exc:
         logger.error("%s", exc)

@@ -2,7 +2,7 @@
 
 Wraps a ``GradientBoostingRegressor`` that predicts *outcome_quality* from
 the 14-dimensional feature vector produced by
-:func:`~thalamus.research.set_quality.interaction_features.compute_feature_vector`.
+:func:`~thalamus_research.set_quality.interaction_features.compute_feature_vector`.
 
 Unlike the GA's linear sum of marginal scores, this model captures
 non-linear pairwise interactions between components (C7 design choice).
@@ -15,7 +15,7 @@ Saved artefact layout (``set_quality_model/`` directory)::
 
 Usage::
 
-    from thalamus.research.set_quality.set_quality_model import SetQualityModel
+    from thalamus_research.set_quality.set_quality_model import SetQualityModel
 
     # Train
     model = SetQualityModel()
@@ -131,7 +131,7 @@ class SetQualityModel:
         cluster_id:
             Query cluster ID for this context.
         catalog:
-            :class:`~thalamus.research.baselines.component_catalog.ComponentCatalog`
+            :class:`~thalamus_research.baselines.component_catalog.ComponentCatalog`
         extractor:
             Optional :class:`CoInclusionExtractor`.
 

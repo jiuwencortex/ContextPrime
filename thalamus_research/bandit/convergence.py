@@ -38,7 +38,7 @@ logged component set.
 
 **Usage**::
 
-    from thalamus.research.bandit.convergence import ConvergenceAnalyzer
+    from thalamus_research.bandit.convergence import ConvergenceAnalyzer
 
     analyzer = ConvergenceAnalyzer.load("/oracle", turn_log_dir="/oracle")
     result = analyzer.analyze(window_size=50)

@@ -22,7 +22,7 @@ where α decays as turns accumulate (default: α = exp(-n_turns / τ), τ=200).
 
 Usage::
 
-    from thalamus.research.meta_learning.transfer_initializer import TransferInitializer
+    from thalamus_research.meta_learning.transfer_initializer import TransferInitializer
 
     ti = TransferInitializer(kb_path="/shared/knowledge_base.json")
     result = ti.transfer(new_oracle_dir="/oracle/new_deployment")
@@ -72,7 +72,7 @@ class TransferInitializer:
     ----------
     kb_path:
         Path to the ``knowledge_base.json`` file produced by
-        :class:`~thalamus.research.meta_learning.knowledge_base.KnowledgeBase`.
+        :class:`~thalamus_research.meta_learning.knowledge_base.KnowledgeBase`.
     """
 
     def __init__(self, kb_path: str | Path) -> None:

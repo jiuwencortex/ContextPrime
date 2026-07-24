@@ -23,7 +23,7 @@ scratch.
 
 Usage::
 
-    from thalamus.research.meta_learning.knowledge_base import KnowledgeBase
+    from thalamus_research.meta_learning.knowledge_base import KnowledgeBase
 
     kb = KnowledgeBase("/shared/knowledge_base.json")
 
@@ -89,7 +89,7 @@ class KnowledgeBase:
         int — number of fingerprint entries updated/created.
         """
         from .component_fingerprint import fingerprint_catalog
-        from thalamus.research.set_quality.outcome_dataset import OutcomeDataset
+        from thalamus_research.set_quality.outcome_dataset import OutcomeDataset
 
         oracle_dir = Path(oracle_dir)
         fps = fingerprint_catalog(oracle_dir)

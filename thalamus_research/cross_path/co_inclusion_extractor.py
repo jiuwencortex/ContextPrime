@@ -20,7 +20,7 @@ penalize sets where members have negative co-inclusion (redundancy).
 
 Usage::
 
-    from thalamus.research.cross_path.co_inclusion_extractor import CoInclusionExtractor
+    from thalamus_research.cross_path.co_inclusion_extractor import CoInclusionExtractor
 
     extractor = CoInclusionExtractor.load("/oracle")
     matrix = extractor.co_inclusion_matrix()   # shape (n, n), symmetric

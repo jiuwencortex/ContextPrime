@@ -17,7 +17,7 @@ implements that interface::
 
 Usage::
 
-    from thalamus.research.set_quality.fitness_function import SetQualityFitness
+    from thalamus_research.set_quality.fitness_function import SetQualityFitness
 
     fitness = SetQualityFitness.load(
         model_dir="/oracle/set_quality_model",
@@ -44,11 +44,11 @@ class SetQualityFitness:
     Parameters
     ----------
     model:
-        Fitted :class:`~thalamus.research.set_quality.set_quality_model.SetQualityModel`.
+        Fitted :class:`~thalamus_research.set_quality.set_quality_model.SetQualityModel`.
     catalog:
-        :class:`~thalamus.research.baselines.component_catalog.ComponentCatalog`.
+        :class:`~thalamus_research.baselines.component_catalog.ComponentCatalog`.
     extractor:
-        Optional :class:`~thalamus.research.cross_path.co_inclusion_extractor.CoInclusionExtractor`.
+        Optional :class:`~thalamus_research.cross_path.co_inclusion_extractor.CoInclusionExtractor`.
     fallback_weight:
         If the model raises an exception during prediction, the method falls
         back to a simple mean-score sum normalized to [0, 1].  This weight
@@ -84,7 +84,7 @@ class SetQualityFitness:
         model_dir:
             Directory containing ``model.pkl`` and ``meta.json``.
         catalog:
-            Loaded :class:`~thalamus.research.baselines.component_catalog.ComponentCatalog`.
+            Loaded :class:`~thalamus_research.baselines.component_catalog.ComponentCatalog`.
         extractor:
             Optional co-inclusion extractor.
         fallback_weight:

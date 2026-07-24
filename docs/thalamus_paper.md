@@ -34,7 +34,7 @@ complexity; (C3) dual-path architecture outperforms either path alone across the
 (C4) off-policy exploration prevents Path B from converging to the policy of Path A; (C5) bookend
 ordering improves performance on long-context tasks; (C6) budget-adaptive selection outperforms
 fixed-budget policies. We describe the baseline comparison suite, the evaluation protocol, and
-the research package (`thalamus/research/`) that implements them. Experimental results on the
+the research package (`../thalamus_research/`) that implements them. Experimental results on the
 120-task jiuwenswarm evaluation suite are in progress.
 
 ---
@@ -336,7 +336,7 @@ coverage of component–query pairs that the selector would not have chosen orga
 
 **Research question (C4).** What is the minimum exploration rate ε* required for Path B to
 converge to a policy not dominated by Path A? Phase R3b derives this formally from the
-bandit theory (implemented in `research/bandit/exploration_rate.py`; empirical sweep pending).
+bandit theory (implemented in `../thalamus_research/bandit/exploration_rate.py`; empirical sweep pending).
 
 **Output:** `classifier.pkl` — weight matrix W, bias vector b, component name list.
 
@@ -416,7 +416,7 @@ alone at every measured maturity checkpoint.
 
 ### 6.1 Baseline Selectors
 
-We compare THALAMUS against five baselines, all implemented in `thalamus/research/baselines/`
+We compare THALAMUS against five baselines, all implemented in `../thalamus_research/baselines/`
 and all implementing `SelectorProtocol` — the same interface as `ContextSelector`.
 
 | Name | Implementation | Key properties |
@@ -442,7 +442,7 @@ The THALAMUS configurations under evaluation are:
 
 ### 6.2 Evaluation Harness
 
-The `thalamus/research/evaluation/` package implements a structured benchmark harness.
+The `../thalamus_research/evaluation/` package implements a structured benchmark harness.
 
 **`BenchmarkRunner`** accepts a dictionary of `{selector_name: SelectorProtocol}` and a
 designated reference selector. For each query in the task suite, it runs every selector
@@ -544,12 +544,12 @@ Sample complexity results compare configurations across this maturity curve.
 
 | Phase | Research question | Implementation status |
 |---|---|---|
-| R1 | Does Path A beat retrieval baselines at cold start? | ✓ Baselines + harness implemented (`research/baselines/`, `research/evaluation/`); quality runs pending |
-| R2 | Which THALAMUS components drive improvement? | ✓ All query-time ablation selectors implemented (`research/ablations/`: `TopKSelector`, `NoBookendSelector`, `SingleBudgetSelector`, `PathBOnlySelector`); quality runs pending |
-| R3a | Does classifier-to-GA transfer improve Path A? | ✓ `CoInclusionExtractor` + `FitnessAugmentor` implemented (`research/cross_path/`); wiring into `oracle_builder evolve` pending |
-| R3b | What is the minimum exploration rate ε\* for Path B convergence? | ✓ `ExplorationRateEstimator` + `ConvergenceAnalyzer` implemented (`research/bandit/`); empirical ε sweep pending |
-| R4 | Does a learned set-level fitness outperform the hand-crafted formula? | ✓ `OutcomeDataset`, `SetQualityModel` (GBR over 14-dim interaction features), `SetQualityFitness` (GA plug-in) implemented (`research/set_quality/`); empirical quality runs pending |
-| R5 | Can cross-deployment warm-start reduce cold-start time? | ✓ SHA-256 fingerprinting (`fingerprint_catalog`), `KnowledgeBase` (flat JSON KB), `TransferInitializer` (writes `transfer_priors.json`) implemented (`research/meta_learning/`); multi-deployment data pending |
+| R1 | Does Path A beat retrieval baselines at cold start? | ✓ Baselines + harness implemented (`../thalamus_research/baselines/`, `../thalamus_research/evaluation/`); quality runs pending |
+| R2 | Which THALAMUS components drive improvement? | ✓ All query-time ablation selectors implemented (`../thalamus_research/ablations/`: `TopKSelector`, `NoBookendSelector`, `SingleBudgetSelector`, `PathBOnlySelector`); quality runs pending |
+| R3a | Does classifier-to-GA transfer improve Path A? | ✓ `CoInclusionExtractor` + `FitnessAugmentor` implemented (`../thalamus_research/cross_path/`); wiring into `oracle_builder evolve` pending |
+| R3b | What is the minimum exploration rate ε\* for Path B convergence? | ✓ `ExplorationRateEstimator` + `ConvergenceAnalyzer` implemented (`../thalamus_research/bandit/`); empirical ε sweep pending |
+| R4 | Does a learned set-level fitness outperform the hand-crafted formula? | ✓ `OutcomeDataset`, `SetQualityModel` (GBR over 14-dim interaction features), `SetQualityFitness` (GA plug-in) implemented (`../thalamus_research/set_quality/`); empirical quality runs pending |
+| R5 | Can cross-deployment warm-start reduce cold-start time? | ✓ SHA-256 fingerprinting (`fingerprint_catalog`), `KnowledgeBase` (flat JSON KB), `TransferInitializer` (writes `transfer_priors.json`) implemented (`../thalamus_research/meta_learning/`); multi-deployment data pending |
 
 ---
 
@@ -567,7 +567,7 @@ Adaptive clustering or online cluster splitting would address this.
 **Linear fitness function.** The GA fitness formula is a weighted sum of individual component
 scores. It structurally cannot model interaction effects: two components that are jointly
 necessary but individually mediocre both receive low fitness values and are likely excluded.
-Phase R4 has implemented this replacement: `SetQualityModel` (GradientBoostingRegressor) and `SetQualityFitness` are available in `research/set_quality/`.
+Phase R4 has implemented this replacement: `SetQualityModel` (GradientBoostingRegressor) and `SetQualityFitness` are available in `../thalamus_research/set_quality/`.
 
 **Independent classifiers.** The N separate binary classifiers cannot model joint necessity.
 If skill A and tool B are only useful together, neither classifier learns this. A multi-label
@@ -577,7 +577,7 @@ classifier with a shared representation would capture these interactions but req
 the cost of degraded quality on ε-fraction of production turns. The optimal exploration rate
 trades off exploration benefit against exploitation cost, and is not derived from data in the
 current system. Phase R3b has derived the theoretically optimal rate analytically
-(`ExplorationRateEstimator` in `research/bandit/`); empirical validation over a range of ε
+(`ExplorationRateEstimator` in `../thalamus_research/bandit/`); empirical validation over a range of ε
 values on the jiuwenswarm task suite remains pending.
 
 **Bookend assumptions.** The bookend ordering strategy assumes monotone attention decay
@@ -586,14 +586,14 @@ toward the middle of the context. This is empirically supported for specific mod
 applying bookend ordering in deployments with unusual context structures.
 
 **Future work.** Phase R3a has implemented co-inclusion extraction and fitness augmentation
-tools (`research/cross_path/`); wiring into `oracle_builder evolve --use-classifier-prior`
+tools (`../thalamus_research/cross_path/`); wiring into `oracle_builder evolve --use-classifier-prior`
 remains pending. Phase R3b has implemented the ε* derivation and convergence measurement
-tools (`research/bandit/`); empirical sweep over exploration rates remains pending.
+tools (`../thalamus_research/bandit/`); empirical sweep over exploration rates remains pending.
 Phase R4 has implemented `SetQualityModel` (GradientBoostingRegressor over 14-dim interaction
-features) and `SetQualityFitness` (GA-compatible callable) in `research/set_quality/`;
+features) and `SetQualityFitness` (GA-compatible callable) in `../thalamus_research/set_quality/`;
 empirical validation of set-level fitness vs marginal scoring on the jiuwenswarm task suite
 remains pending. Phase R5 has implemented SHA-256 component fingerprinting, `KnowledgeBase`,
-and `TransferInitializer` in `research/meta_learning/`; empirical cold-start comparison with
+and `TransferInitializer` in `../thalamus_research/meta_learning/`; empirical cold-start comparison with
 and without `transfer_priors.json` warm-start requires multi-deployment data.
 
 ---
@@ -610,7 +610,7 @@ ContextSelector facade provides automatic path selection and graceful fallback.
 
 We have formalized six research contributions that distinguish THALAMUS from retrieval-based
 baselines and defined an evaluation protocol and baseline comparison suite to test them. The
-baseline selectors and evaluation harness are implemented in `thalamus/research/`. Experimental
+baseline selectors and evaluation harness are implemented in `../thalamus_research/`. Experimental
 results on the 120-task jiuwenswarm suite will be reported as the quality measurement pipeline
 is completed.
 

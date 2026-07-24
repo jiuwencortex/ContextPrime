@@ -29,7 +29,7 @@ thalamus-oracle   = "thalamus.oracle_builder.cli:main"
 # Runtime — assign a query to a context configuration (production)
 thalamus-select   = "thalamus.context_selectors.cli:main"
 # Research — baseline selectors, evaluation harness, and future R2-R5 tools
-thalamus-research = "thalamus.research.cli:main"
+thalamus-research = "thalamus_research.cli:main"
 
 # ── Package discovery ────────────────────────────────────────────────────────
 # All sub-systems live under thalamus/ — a single namespace package.
